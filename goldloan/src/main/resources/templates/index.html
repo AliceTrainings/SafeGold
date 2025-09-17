@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid leela">
+            <a class="navbar-brand" href="#">D.S.R Gold Loan</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Product
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Rings</a></li>
+                            <li><a class="dropdown-item" href="#">Haram</a></li>
+                            <li><a class="dropdown-item" href="#">Earrings</a></li>
+                            <li><a class="dropdown-item" href="#">Bracelet</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Login redirects to phone number page -->
+                <form class="d-flex" th:action="@{/users/phone}" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search here" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero section -->
+    <div class="container-fluid">
+        <div class="row" style="background-color: rgb(249, 249, 249);">
+            <div class="col imag">
+                <img src="images/gold_loan-removebg-preview.png" alt="Gold Loan">
+            </div>
+            <div class="col">
+                <div class="container-fluid" style="padding: 50px;">
+                    <div class="row san">
+                        <h5>GET THE BEST RATE FOR YOUR GOLD LOAN</h5>
+                        <form onsubmit="return false">
+                            <p><input type="text" id="username" placeholder="Username" class="user"></p>
+                            <p><input type="password" id="password" placeholder="Password" class="user"></p>
+                            <button type="submit" class="user">GET A GOLD LOAN DETAILS</button>
+                            <p id="error-message"></p>
+                        </form>
+                        <div class="col">
+                            <p>Serving Over</p>
+                            <h6>2.5 Lakh</h6>
+                            <p>Customers Daily</p>
+                        </div>
+                        <div class="col">
+                            <p>Over</p>
+                            <h6>700+</h6>
+                            <p>Branches</p>
+                        </div>
+                        <div class="col">
+                            <p>Instant Gold Loan In</p>
+                            <h6>1 Visit</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+<!-- Additional sections like carousel, benefits, footer... -->
+<section>
+    <div class="container-fluid" style="padding: 50px; background-color: rgb(255, 247, 240);">
+        <div class="row">
+            <div class="col-md-3" style="text-align: center;">
+                <img src="images/rbi.webp" alt="" width="300px" height="200px">
+            </div>
+            <div class="col text">
+                <h3>Discover why over 70 crore customers trust us</h3>
+                <div class="row icon">
+                    <p>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                        <i class="bi bi-star-fill"></i>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3" style="text-align: center;">
+                <img src="images/no-1-unit-300.webp" alt="" width="300px" height="200px">
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container-fluid" style="padding: 50px;">
+        <div class="row">
+            <div class="col">
+                <h2>About D.S.R Finance Gold Loan</h2>
+                <p>
+                    A gold loan or a loan against gold is a secured loan that customers can avail from Muthoot Finance in
+                    lieu of gold ornaments like gold jewellery. Quick loan disbursals, attractive interest rates, and
+                    customer satisfaction guaranteed.
+                </p>
+            </div>
+            <div class="col" style="padding: 50px;">
+                <p>
+                    Our instant Gold Loan@Home service allows you to get a gold loan at the comfort of your home in 3
+                    easy steps.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" style="padding: 100px;">
+        <div class="row" style="text-align: center;">
+            <h6 style="padding: 50px;">© 2025 D.S.R Finance Limited. All Rights Reserved.</h6>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
