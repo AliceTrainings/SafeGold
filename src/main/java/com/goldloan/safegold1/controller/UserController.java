@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -27,60 +29,112 @@ public class UserController {
         if (user != null) {
             model.addAttribute("user", user);
         }
-        return "index"; // home page HTML
+        return "index"; // index.html
     }
 
-    // Phone number page
+    // Phone number input
     @GetMapping("/phone")
     public String showPhoneForm() {
-        return "phone";
+        return "phone"; // phone.html
     }
 
+    // Send OTP
     @PostMapping("/send-otp")
     public String sendOtp(@RequestParam String phone, Model model) {
+        phone = phone.trim();
         String otp = otpService.generateOtp();
         otpService.saveOtp(phone, otp);
         model.addAttribute("phone", phone);
-        model.addAttribute("otp", otp); // dev only
-        return "otp";
+        model.addAttribute("otp", otp); // for debug/testing
+        return "otp"; // otp.html
     }
 
+    // Verify OTP
     @PostMapping("/otp")
     public String verifyOtp(@RequestParam String phone,
                             @RequestParam String otp,
                             Model model) {
+        phone = phone.trim();
         if (otpService.validateOtp(phone, otp)) {
-            model.addAttribute("phone", phone);
-            return "register";
+            Optional<User> existingUser = userRepository.findByMobileNumber(phone);
+            if (existingUser.isPresent()) {
+                model.addAttribute("mobileNumber", phone);
+                return "login"; // existing user → login
+            } else {
+                model.addAttribute("phone", phone);
+                return "register"; // new user → register
+            }
         }
         model.addAttribute("phone", phone);
         model.addAttribute("error", "Invalid OTP. Please try again.");
         return "otp";
     }
 
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, HttpSession session) {
-        userRepository.save(user);
-        // Store user in session
-        session.setAttribute("user", user);
-        return "redirect:/users/"; // redirect to home page
+    // Registration page (GET)
+    @GetMapping("/register")
+    public String showRegisterPage(@RequestParam(required = false) String phone, Model model) {
+        if (phone != null) {
+            model.addAttribute("phone", phone);
+        }
+        return "register"; // register.html
     }
 
-    // Dashboard
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user != null) {
-            model.addAttribute("user", user);
-            return "dashboard";
+    // Register new user
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute User user, HttpSession session, Model model) {
+        String phone = user.getMobileNumber().trim();
+        Optional<User> existingUser = userRepository.findByMobileNumber(phone);
+
+        if (existingUser.isPresent()) {
+            model.addAttribute("error", "Mobile number already registered. Please login.");
+            model.addAttribute("mobileNumber", phone);
+            return "login";
         }
-        return "redirect:/users/"; // redirect to home if not logged in
+
+        user.setMobileNumber(phone);
+        userRepository.save(user);
+        session.setAttribute("user", user);
+        return "redirect:/users/"; // redirect to home
+    }
+
+    // Login page (GET)
+    @GetMapping("/login")
+    public String showLoginPage(@RequestParam(required = false) String mobileNumber, Model model) {
+        if (mobileNumber != null) {
+            model.addAttribute("mobileNumber", mobileNumber);
+        }
+        return "login"; // login.html
+    }
+
+    // Handle login submission (POST)
+    @PostMapping("/login")
+    public String loginUser(@RequestParam String mobileNumber,
+                            @RequestParam String password,
+                            HttpSession session,
+                            Model model) {
+        String phone = mobileNumber.trim();
+        Optional<User> userOpt = userRepository.findByMobileNumber(phone);
+
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getPassword().equals(password)) {
+                session.setAttribute("user", user);
+                return "redirect:/users/"; // home page
+            } else {
+                model.addAttribute("error", "Invalid password");
+            }
+        } else {
+            model.addAttribute("error", "User not found");
+        }
+
+        model.addAttribute("mobileNumber", phone);
+        return "login";
     }
 
     // Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate(); // clear session
-        return "redirect:/users/"; // return to home without user
+        session.invalidate();
+        return "redirect:/users/";
     }
 }
