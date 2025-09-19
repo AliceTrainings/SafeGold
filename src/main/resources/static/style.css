@@ -1,0 +1,94 @@
+.leela{
+    padding: 10px;
+    background: linear-gradient(90deg, orange, gold);
+    
+}
+.san{
+   padding: 40px;
+    border: 5px solid red;
+}
+body button{
+    background: linear-gradient(90deg, orange, gold);
+    border-radius: 50px;
+}
+
+.text h3{
+    padding: 45px;
+    text-align: center;
+    color: red;
+}
+.icon p{
+    color: gold;
+    text-align: center;
+    font-size: x-large;
+}
+.circle{
+    text-align: center;
+}
+.circle img{
+    width: 100px;
+    height: 100px;
+
+    border-radius: 100px;
+    border: 5px solid red;
+}
+.imag img{
+    max-width: 100vw;
+    max-height: 100vh;
+}
+.red{
+    color: white;
+    text-align: center;
+    
+    background-color: red;
+}
+footer{
+    background :linear-gradient(55deg, gold, rgb(147, 12, 231));
+    color: white;
+}
+.user{
+    width: 700px;
+    height: 50px;
+    border-radius: 20px;
+}
+
+
+ /* ringcss */
+
+  body{
+        background-color: #f1f8fd;
+      }
+    .product-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 20px;
+      transition: box-shadow 0.3s ease-in-out;
+    }
+    .product-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .product-card img {
+      border-radius: 8px;
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .product-title {
+      font-weight: 500;
+      margin-top: 10px;
+    }
+    .brand-name {
+      font-size: 0.9rem;
+      color: #777;
+    }
+    .price {
+      font-weight: bold;
+      color: #000;
+    }
+    
+    .discount {
+      color: green;
+      margin-left: 8px;
+      font-size: 0.9rem;
+    }

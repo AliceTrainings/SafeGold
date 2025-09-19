@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verify OTP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        #timer { font-weight: bold; color: #dc3545; }
+    </style>
+</head>
+<body class="container mt-5">
+    <div th:if="${otp}" class="alert alert-warning mt-3" id="debugOtpMsg">
+        OTP: <span th:text="${otp}"></span>
+    </div>
+    <div th:if="${error}" class="alert alert-danger mt-3" id="resultMsg">
+        <span th:text="${error}"></span>
+    </div>
+    <h2>Enter OTP</h2>
+    <form th:action="@{/users/otp}" method="post" id="otpForm">
+        <input type="hidden" name="phone" th:value="${phone}" />
+        <div class="mb-3">
+            <input type="text" class="form-control" name="otp" placeholder="Enter 6-digit OTP" required />
+        </div>
+        <button type="submit" class="btn btn-success">Verify OTP</button>
+    </form>
+    <div class="mt-3">
+        <span>Expires in <span id="timer">60</span> seconds</span><br />
+        <button class="btn btn-link p-0 mt-2" id="resendBtn" disabled>Resend OTP</button>
+    </div>
+    <script>
+        let countdown = 60;
+        const timerEl = document.getElementById("timer");
+        const resendBtn = document.getElementById("resendBtn");
+
+        // ⏲ Start countdown
+        const startTimer = () => {
+            countdown = 60;
+            resendBtn.disabled = true;
+            const interval = setInterval(() => {
+                countdown--;
+                timerEl.innerText = countdown;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    resendBtn.disabled = false;
+                    timerEl.innerText = "0";
+                }
+            }, 1000);
+        };
+
+        // 🔁 Handle Resend OTP (simulated, you need to implement /users/send-otp POST in your controller)
+        resendBtn.addEventListener("click", function () {
+            const phone = document.querySelector('input[name="phone"]').value;
+            fetch("/users/send-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "phone=" + encodeURIComponent(phone)
+            })
+            .then(() => {
+                alert("New OTP sent to " + phone + ".check console for OTP in debug mode.");
+                startTimer();
+            });
+        });
+
+        window.onload = startTimer;
+    </script>
+</body>
+</html>

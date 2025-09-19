@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold Loan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid leela">
+            <a class="navbar-brand" th:href="@{/users/}">D.S.R Gold Loan</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/users/}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Product</a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">Rings</a></li>
+                            <li><a class="dropdown-item" href="#">Haram</a></li>
+                            <li><a class="dropdown-item" href="#">Earrings</a></li>
+                            <li><a class="dropdown-item" href="#">Bracelet</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- If user is logged in -->
+                <div th:if="${user != null}">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
+                                <span th:text="${user.name}"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                                <!-- FIXED LINK: point to /dashboard -->
+                                <li><a class="dropdown-item" th:href="@{/dashboard}">Dashboard</a></li>
+                                <li><a class="dropdown-item" th:href="@{/users/logout}">Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- If no user, show login -->
+                <div th:if="${user == null}">
+                    <form class="d-flex" th:action="@{/users/phone}" method="get">
+                        <input class="form-control me-2" type="search" placeholder="Search here">
+                        <button class="btn btn-outline-success" type="submit">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero section -->
+    <div class="container-fluid">
+        <div class="row" style="background-color: rgb(249, 249, 249);">
+            <div class="col imag">
+                <img src="images/gold_loan-removebg-preview.png" alt="Gold Loan">
+            </div>
+            <div class="col">
+                <div class="container-fluid" style="padding: 50px;">
+                    <div class="row san">
+                        <h5>GET THE BEST RATE FOR YOUR GOLD LOAN</h5>
+                        <form onsubmit="return false">
+                            <p><input type="text" id="username" placeholder="Username" class="user"></p>
+                            <p><input type="password" id="password" placeholder="Password" class="user"></p>
+                            <button type="submit" class="user">GET GOLD LOAN DETAILS</button>
+                            <p id="error-message"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<footer>
+    <div class="container-fluid" style="padding: 50px; text-align: center;">
+        <h6>© 2025 D.S.R Finance Limited. All Rights Reserved.</h6>
+    </div>
+</footer>
+
+</body>
+</html>
