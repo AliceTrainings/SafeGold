@@ -29,24 +29,25 @@ public class UserController {
         if (user != null) {
             model.addAttribute("user", user);
         }
-        return "index"; // index.html
+        return "index";
     }
 
-    // Phone number input
+    // Phone number page
     @GetMapping("/phone")
     public String showPhoneForm() {
-        return "phone"; // phone.html
+        return "phone";
     }
 
-    // Send OTP
+    // Send OTP (original + resend)
     @PostMapping("/send-otp")
     public String sendOtp(@RequestParam String phone, Model model) {
         phone = phone.trim();
         String otp = otpService.generateOtp();
         otpService.saveOtp(phone, otp);
+
         model.addAttribute("phone", phone);
-        model.addAttribute("otp", otp); // for debug/testing
-        return "otp"; // otp.html
+        model.addAttribute("otp", otp); // debug/testing only
+        return "otp";
     }
 
     // Verify OTP
@@ -58,13 +59,16 @@ public class UserController {
         if (otpService.validateOtp(phone, otp)) {
             Optional<User> existingUser = userRepository.findByMobileNumber(phone);
             if (existingUser.isPresent()) {
+                // Existing user → login page
                 model.addAttribute("mobileNumber", phone);
-                return "login"; // existing user → login
+                return "login";
             } else {
+                // New user → register page
                 model.addAttribute("phone", phone);
-                return "register"; // new user → register
+                return "register";
             }
         }
+
         model.addAttribute("phone", phone);
         model.addAttribute("error", "Invalid OTP. Please try again.");
         return "otp";
@@ -76,7 +80,7 @@ public class UserController {
         if (phone != null) {
             model.addAttribute("phone", phone);
         }
-        return "register"; // register.html
+        return "register";
     }
 
     // Register new user
@@ -94,7 +98,7 @@ public class UserController {
         user.setMobileNumber(phone);
         userRepository.save(user);
         session.setAttribute("user", user);
-        return "redirect:/users/"; // redirect to home
+        return "redirect:/users/";
     }
 
     // Login page (GET)
@@ -103,10 +107,10 @@ public class UserController {
         if (mobileNumber != null) {
             model.addAttribute("mobileNumber", mobileNumber);
         }
-        return "login"; // login.html
+        return "login";
     }
 
-    // Handle login submission (POST)
+    // Login submission (POST)
     @PostMapping("/login")
     public String loginUser(@RequestParam String mobileNumber,
                             @RequestParam String password,

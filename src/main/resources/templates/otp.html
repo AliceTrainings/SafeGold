@@ -8,31 +8,38 @@
     </style>
 </head>
 <body class="container mt-5">
-    <div th:if="${otp}" class="alert alert-warning mt-3" id="debugOtpMsg">
-        OTP: <span th:text="${otp}"></span>
-    </div>
-    <div th:if="${error}" class="alert alert-danger mt-3" id="resultMsg">
-        <span th:text="${error}"></span>
-    </div>
     <h2>Enter OTP</h2>
+
+    <!-- Error Message -->
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <!-- Debug OTP (remove in production) -->
+    <div th:if="${otp}" class="alert alert-warning">
+        OTP (for testing): <span th:text="${otp}"></span>
+    </div>
+
+    <!-- OTP Form -->
     <form th:action="@{/users/otp}" method="post" id="otpForm">
         <input type="hidden" name="phone" th:value="${phone}" />
         <div class="mb-3">
-            <input type="text" class="form-control" name="otp" placeholder="Enter 6-digit OTP" required />
+            <input type="text" class="form-control" name="otp" placeholder="6-digit OTP" required/>
         </div>
         <button type="submit" class="btn btn-success">Verify OTP</button>
     </form>
+
+    <!-- Countdown & Resend -->
     <div class="mt-3">
-        <span>Expires in <span id="timer">60</span> seconds</span><br />
+        <span>Expires in <span id="timer">60</span> seconds</span><br/>
         <button class="btn btn-link p-0 mt-2" id="resendBtn" disabled>Resend OTP</button>
     </div>
+
     <script>
         let countdown = 60;
         const timerEl = document.getElementById("timer");
         const resendBtn = document.getElementById("resendBtn");
 
-        // ⏲ Start countdown
-        const startTimer = () => {
+        // Start countdown
+        function startTimer() {
             countdown = 60;
             resendBtn.disabled = true;
             const interval = setInterval(() => {
@@ -44,19 +51,28 @@
                     timerEl.innerText = "0";
                 }
             }, 1000);
-        };
+        }
 
-        // 🔁 Handle Resend OTP (simulated, you need to implement /users/send-otp POST in your controller)
+        // Handle Resend OTP
         resendBtn.addEventListener("click", function () {
             const phone = document.querySelector('input[name="phone"]').value;
+
+            // Send POST to /users/send-otp via fetch
             fetch("/users/send-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: "phone=" + encodeURIComponent(phone)
             })
-            .then(() => {
-                alert("New OTP sent to " + phone + ".check console for OTP in debug mode.");
+            .then(response => response.text())
+            .then(html => {
+                // Replace current page with new HTML containing updated OTP
+                document.body.innerHTML = html;
+                // Restart countdown
                 startTimer();
+            })
+            .catch(err => {
+                alert("Failed to resend OTP. Try again.");
+                console.error(err);
             });
         });
 
