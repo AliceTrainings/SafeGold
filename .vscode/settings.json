@@ -14,5 +14,6 @@
             "database": "goldloan",
             "username": "root"
         }
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
