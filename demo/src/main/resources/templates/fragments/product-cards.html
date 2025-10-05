@@ -1,0 +1,66 @@
+<div th:fragment="product-cards" class="row" id="products-grid">
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="product : ${products}">
+        <div class="card h-100 product-card border-0 shadow-sm">
+            <!-- Product Image -->
+            <div class="position-relative overflow-hidden">
+                <img th:src="${product.images.?[isPrimary == true].![imageUrl].get(0) ?: '/images/no-image.jpg'}" 
+                     class="card-img-top product-image" 
+                     th:alt="${product.name}" 
+                     style="height: 250px; object-fit: cover;">
+                
+                <!-- Wishlist Button -->
+                <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-2 wishlist-btn" 
+                        th:data-product-id="${product.id}"
+                        sec:authorize="isAuthenticated()">
+                    <i class="fas fa-heart" 
+                       th:class="${__themeResolver.resolveThemeName('inWatchlist_' + product.id)}? 'fas fa-heart text-danger' : 'far fa-heart'"></i>
+                </button>
+                
+                <!-- Karat Badge -->
+                <span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2" 
+                      th:text="${product.karat.display}"></span>
+                
+                <!-- Stock Status -->
+                <span class="badge position-absolute bottom-0 start-0 m-2"
+                      th:class="${product.stockQuantity > 0} ? 'bg-success' : 'bg-danger'"
+                      th:text="${product.stockQuantity > 0} ? 'In Stock' : 'Out of Stock'"></span>
+            </div>
+
+            <div class="card-body d-flex flex-column">
+                <h6 class="card-title text-truncate" th:text="${product.name}"></h6>
+                <p class="text-muted small mb-2" th:text="${product.category.name}"></p>
+                
+                <!-- Price and Weight -->
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="h6 text-primary mb-0" th:text="'₹' + ${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                        <small class="text-muted" th:text="${product.weight} + 'g'"></small>
+                    </div>
+                </div>
+                
+                <!-- Making Charges -->
+                <div class="mb-2" th:if="${product.makingCharges != null and product.makingCharges > 0}">
+                    <small class="text-muted">
+                        Making: ₹<span th:text="${#numbers.formatDecimal(product.makingCharges, 0, 'COMMA', 0, 'POINT')}"></span>
+                    </small>
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-auto">
+                    <div class="d-grid gap-2">
+                        <a th:href="@{'/products/' + ${product.id}}" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>View Details
+                        </a>
+                        <button class="btn btn-primary btn-sm inquiry-btn" 
+                                th:data-product-id="${product.id}"
+                                th:data-product-name="${product.name}"
+                                sec:authorize="isAuthenticated()">
+                            <i class="fas fa-question-circle me-1"></i>Inquire Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

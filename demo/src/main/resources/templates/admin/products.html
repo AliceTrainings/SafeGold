@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Edit Product - Gold Sales</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 col-lg-2 sidebar p-3">
+                    <h5 class="text-muted mb-3">Admin Panel</h5>
+                    <ul class="nav nav-pills flex-column">
+                        <li class="nav-item mb-2">
+                            <a href="/admin/dashboard" class="nav-link">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="/admin/products" class="nav-link active">
+                                <i class="fas fa-gem me-2"></i>Products
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="/admin/products/add" class="nav-link">
+                                <i class="fas fa-plus me-2"></i>Add Product
+                            </a>
+                        </li>
+                        <li class="nav-item mb-2">
+                            <a href="/admin/inquiries" class="nav-link">
+                                <i class="fas fa-envelope me-2"></i>Inquiries
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-md-9 col-lg-10 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Edit Product</h2>
+                        <a href="/admin/products" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Products
+                        </a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" method="post" th:object="${product}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Product Name *</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{name}" 
+                                                   th:class="${#fields.hasErrors('name')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="Enter product name">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="imageUrl" class="form-label">Image URL *</label>
+                                            <input type="url" class="form-control" id="imageUrl" th:field="*{imageUrl}" 
+                                                   th:class="${#fields.hasErrors('imageUrl')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="https://example.com/image.jpg">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('imageUrl')}" th:errors="*{imageUrl}"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="category" class="form-label">Category *</label>
+                                            <select class="form-select" id="category" th:field="*{category}"
+                                                    th:class="${#fields.hasErrors('category')} ? 'form-select is-invalid' : 'form-select'">
+                                                <option value="">Select Category</option>
+                                                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.displayName}">Category</option>
+                                            </select>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" th:field="*{description}" 
+                                                      rows="3" placeholder="Product description (optional)"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="grams" class="form-label">Weight (grams) *</label>
+                                            <input type="number" step="0.01" class="form-control" id="grams" th:field="*{grams}" 
+                                                   th:class="${#fields.hasErrors('grams')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="5.50">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('grams')}" th:errors="*{grams}"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="karat" class="form-label">Karat *</label>
+                                            <select class="form-select" id="karat" th:field="*{karat}"
+                                                    th:class="${#fields.hasErrors('karat')} ? 'form-select is-invalid' : 'form-select'">
+                                                <option value="">Select Karat</option>
+                                                <option th:each="k : ${T(java.util.Arrays).asList(14, 16, 18, 20, 22, 24)}" 
+                                                        th:value="${k}" th:text="${k + 'K'}">Karat</option>
+                                            </select>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('karat')}" th:errors="*{karat}"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="rate" class="form-label">Rate per gram (₹) *</label>
+                                            <input type="number" step="0.01" class="form-control" id="rate" th:field="*{rate}" 
+                                                   th:class="${#fields.hasErrors('rate')} ? 'form-control is-invalid' : 'form-control'"
+                                                   placeholder="4500.00">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('rate')}" th:errors="*{rate}"></div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Preview</h6>
+                                                    <img th:src="*{imageUrl}" alt="Product Preview" class="img-thumbnail" 
+                                                         style="max-width: 150px; max-height: 150px;" 
+                                                         th:if="*{imageUrl} != null and *{imageUrl} != ''">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-gold btn-lg">
+                                            <i class="fas fa-save me-2"></i>Update Product
+                                        </button>
+                                        <a href="/admin/products" class="btn btn-outline-secondary btn-lg ms-2">
+                                            Cancel
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
