@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Loans</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Loans</h3>
+    <div>
+      <a class="btn btn-secondary me-2" th:href="@{/admin/dashboard}">Back</a>
+      <a class="btn btn-primary" th:href="@{/admin/loans/new}">New Loan</a>
+    </div>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Amount</th>
+        <th>Interest</th>
+        <th>Tenure</th>
+        <th>Status</th>
+        <th>Start Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="l : ${loans}">
+        <td th:text="${l.id}"></td>
+        <td th:text="${l.user != null ? l.user.name : 'N/A'}"></td>
+        <td th:text="${l.amount}"></td>
+        <td th:text="${l.interestRate} + '%' "></td>
+        <td th:text="${l.tenure}"></td>
+        <td>
+          <form th:action="@{'/admin/loans/' + ${l.id} + '/status'}" method="post" class="d-flex gap-2">
+            <select class="form-select form-select-sm" name="status">
+              <option th:selected="${l.status == 'Active'}" value="Active">Active</option>
+              <option th:selected="${l.status == 'Closed'}" value="Closed">Closed</option>
+            </select>
+            <button class="btn btn-sm btn-outline-primary" type="submit">Update</button>
+          </form>
+        </td>
+        <td th:text="${l.startDate}"></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
+
+
+
+

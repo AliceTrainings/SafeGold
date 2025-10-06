@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="container py-4">
+  <h3 class="mb-3">Browse Products</h3>
+  <form class="row g-2 mb-3" method="get">
+    <div class="col-md-4">
+      <input class="form-control" type="text" name="q" th:value="${q}" placeholder="Search by item name (e.g., ring)">
+    </div>
+    <div class="col-md-3">
+      <input class="form-control" type="text" name="category" th:value="${category}" placeholder="Category (Ring, Necklace)">
+    </div>
+    <div class="w-100"></div>
+    <div class="col-md-3">
+      <input class="form-control" type="number" step="0.01" name="minPrice" th:value="${minPrice}" placeholder="Min price">
+    </div>
+    <div class="col-md-3">
+      <input class="form-control" type="number" step="0.01" name="maxPrice" th:value="${maxPrice}" placeholder="Max price">
+    </div>
+    <div class="col-md-2">
+      <input class="form-control" type="number" step="0.01" name="minGrams" th:value="${minGrams}" placeholder="Min grams">
+    </div>
+    <div class="col-md-2">
+      <input class="form-control" type="number" step="0.01" name="maxGrams" th:value="${maxGrams}" placeholder="Max grams">
+    </div>
+    <div class="col-md-2">
+      <input class="form-control" type="number" name="minCarats" th:value="${minCarats}" placeholder="Min karat">
+    </div>
+    <div class="col-md-2">
+      <input class="form-control" type="number" name="maxCarats" th:value="${maxCarats}" placeholder="Max karat">
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-primary w-100" type="submit">Filter</button>
+    </div>
+  </form>
+
+  <div class="row row-cols-1 row-cols-md-3 g-3">
+    <div class="col" th:each="p : ${products}">
+      <div class="card h-100">
+        <img th:src="${p.imageUrl}" class="card-img-top" alt="product">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${p.name}">Item Name</h5>
+          <p class="card-text mb-1">Category: <span th:text="${p.category}">Ring</span></p>
+          <p class="card-text mb-1">Grams: <span th:text="${p.grams}">0</span></p>
+          <p class="card-text mb-1">Karat: <span th:text="${p.carats}">0</span>K</p>
+          <p class="card-text fw-semibold">Price: ₹<span th:text="${p.price}">0</span></p>
+          <a class="btn btn-outline-primary btn-sm" th:href="@{'/users/products/' + ${p.id}}">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
+

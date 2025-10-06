@@ -1,0 +1,44 @@
+/* Global */
+:root{
+  --sg-bg:#0b0f1a;
+  --sg-surface:#121829;
+  --sg-muted:#8b95a7;
+  --sg-primary:#ffd166;
+  --sg-primary-contrast:#0b0f1a;
+  --sg-border:#1f2a44;
+}
+body{background:#0f1526;color:#e6ebf5;}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.9}
+
+/* Navbar */
+.sg-navbar{background:var(--sg-surface);border-bottom:1px solid var(--sg-border)}
+.sg-navbar .navbar-brand{color:#fff}
+.sg-navbar .nav-link{color:#cbd4e6}
+.sg-navbar .nav-link.active{color:#fff;font-weight:600}
+.text-gradient{background:linear-gradient(90deg,#ffd166,#fca311);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* Hero */
+.sg-hero{background:linear-gradient(180deg,rgba(255,209,102,.08),transparent), radial-gradient(1200px 500px at 80% -10%, rgba(255,209,102,.15), transparent) ,var(--sg-bg);padding:64px 0;border-bottom:1px solid var(--sg-border)}
+.sg-hero .lead{color:#cbd4e6}
+.sg-hero .btn-primary{background:var(--sg-primary);border-color:var(--sg-primary);color:var(--sg-primary-contrast)}
+.sg-hero .btn-outline-light{border-color:#e6ebf544;color:#e6ebf5}
+.sg-hero-img{max-height:420px;filter: drop-shadow(0 30px 60px rgba(0,0,0,.4));}
+
+/* Feature cards */
+.sg-feature-card{background:var(--sg-surface);border:1px solid var(--sg-border);border-radius:14px;padding:20px;height:100%}
+.sg-feature-card h5{margin-top:8px;margin-bottom:6px}
+.sg-feature-card p{color:#aab4c6;margin:0}
+.sg-feature-icon{width:44px;height:44px;border-radius:10px;background:rgba(255,209,102,.12);display:flex;align-items:center;justify-content:center;color:#ffd166;font-size:20px}
+
+/* Product teaser */
+.sg-product-card{background:#0f1322;border:1px solid var(--sg-border);border-radius:12px;overflow:hidden}
+.sg-product-card img{width:100%;height:160px;object-fit:cover}
+
+/* CTA */
+.sg-cta{background:linear-gradient(90deg,#1b2136,#121829);border-top:1px solid var(--sg-border);border-bottom:1px solid var(--sg-border);padding:28px 0;color:#e6ebf5}
+
+/* Footer */
+.sg-footer{background:#0b0f1a;border-top:1px solid var(--sg-border)}
+.sg-footer a{color:#cbd4e6}
+.sg-social{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--sg-border);border-radius:8px;color:#cbd4e6}

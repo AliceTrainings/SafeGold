@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="bg-light">
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Login</h2>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <form th:action="@{/users/login}" method="post">
+            <div class="mb-3">
+                <input type="text" name="mobileNumber" class="form-control" th:value="${mobileNumber}" placeholder="Phone" required/>
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password" required/>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Login</button>
+        </form>
+
+        <p class="text-center mt-3">
+            New user? 
+            <a th:href="@{/users/phone}">Register</a>
+        </p>
+        <p class="text-center mt-2">
+            <a th:href="@{/admin/login}">Admin login</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
