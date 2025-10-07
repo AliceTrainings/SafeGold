@@ -9,10 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
@@ -33,15 +30,31 @@
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
         <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
-        <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
+        <a class="btn btn-outline-light btn-sm" th:href="@{/users/logout}">Logout</a>
       </div>
       <div th:if="${user == null}" class="d-flex gap-2">
-        <a class="btn btn-outline-dark" th:href="@{/users/phone}">Login</a>
-        <a class="btn btn-primary" th:href="@{/users/products}">Browse Products</a>
+        <a class="btn btn-outline-light" th:href="@{/users/phone}">Login</a>
+        <a class="btn btn-gold" th:href="@{/users/products}">Browse Products</a>
       </div>
     </div>
   </div>
-  </nav>
+</nav>
+<!-- Metal Prices Row -->
+<div class="d-flex gap-4 ms-auto align-items-center metal-row">
+    <div class="metal gold">
+        <span class="label">Gold:</span>
+        <span class="price" id="gold-price">--</span>
+    </div>
+    <div class="metal silver">
+        <span class="label">Silver:</span>
+        <span class="price" id="silver-price">--</span>
+    </div>
+    <div class="metal platinum">
+        <span class="label">Platinum:</span>
+        <span class="price" id="platinum-price">--</span>
+    </div>
+</div>
+
 
 <!-- HERO -->
 <section class="sg-hero">
@@ -51,24 +64,24 @@
         <h1 class="display-5 fw-bold mb-3">Instant Gold Loans at Honest Rates</h1>
         <p class="lead text-muted mb-4">Unlock funds against your gold with transparent pricing, secure vault storage, and same-day disbursal.</p>
         <div class="d-flex gap-2">
-          <a class="btn btn-primary btn-lg" th:href="@{/admin/login}"><i class="bi bi-speedometer2 me-2"></i>Admin</a>
+          <a class="btn btn-gold btn-lg" th:href="@{/admin/login}"><i class="bi bi-speedometer2 me-2"></i>Admin</a>
           <a class="btn btn-outline-light btn-lg" th:href="@{/users/products}"><i class="bi bi-bag me-2"></i>Shop Jewellery</a>
         </div>
-        <div class="d-flex align-items-center gap-3 mt-4 text-white-50 small">
+        <div class="d-flex align-items-center gap-3 mt-4 text-light small">
           <span><i class="bi bi-shield-lock me-1"></i>Secure vaulting</span>
           <span><i class="bi bi-lightning me-1"></i>Same-day approval</span>
           <span><i class="bi bi-percent me-1"></i>Flexible tenure</span>
         </div>
       </div>
       <div class="col-lg-6 text-center">
-        <img src="images/gold_loan-removebg-preview.png" class="img-fluid sg-hero-img" alt="Gold Loan">
+        <img src="/images/gold_loan-removebg-preview.png" class="img-fluid sg-hero-img" alt="Gold Loan">
       </div>
     </div>
   </div>
 </section>
 
 <!-- FEATURES -->
-<section class="py-5">
+<section class="py-5 sg-dark-section">
   <div class="container">
     <div class="row g-4">
       <div class="col-md-4">
@@ -106,40 +119,42 @@
     <div class="row g-3">
       <div class="col-6 col-md-3">
         <div class="sg-product-card">
-          <img src="/images/ring1.webp" alt="Ring">
+          <img src="/images/bra1.avif" alt="Ring">
           <div class="p-2">
             <div class="fw-semibold">Gold Ring</div>
-            <div class="text-muted small">22K • 7g</div>
+            <div class="text small">22K • 7g</div>
           </div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="sg-product-card">
-          <img src="/images/har2.webp" alt="Necklace">
+          <img src="/images/cain1.jpg" alt="Necklace">
           <div class="p-2">
             <div class="fw-semibold">Necklace</div>
-            <div class="text-muted small">22K • 30g</div>
+            <div class="text small">22K • 30g</div>
           </div>
         </div>
       </div>
       <div class="col-6 col-md-3">
         <div class="sg-product-card">
-          <img src="/images/ear5.jpg" alt="Earrings">
+          <img src="/images/ear1.jpg" alt="Necklace">
           <div class="p-2">
-            <div class="fw-semibold">Earrings</div>
-            <div class="text-muted small">18K • 5g</div>
+            <div class="fw-semibold">earings</div>
+            <div class="text small">22K • 30g</div>
           </div>
         </div>
-      </div>
+      </div>  
+
       <div class="col-6 col-md-3">
         <div class="sg-product-card">
-          <img src="/images/bra4.jpg" alt="Bracelet">
+          <img src="/images/bra8.jpg" alt="Necklace">
           <div class="p-2">
-            <div class="fw-semibold">Bracelet</div>
-            <div class="text-muted small">22K • 12g</div>
+            <div class="fw-semibold">earings</div>
+            <div class="text small">22K • 30g</div>
           </div>
         </div>
-      </div>
+      </div> 
+
     </div>
   </div>
 </section>
@@ -165,7 +180,7 @@
       </div>
       <div class="col-md-4">
         <h5>Quick Links</h5>
-        <ul class="list-unstyled text-muted">
+        <ul class="list-unstyled text">
           <li><a th:href="@{/users/products}">Shop Jewellery</a></li>
           <li><a th:href="@{/dashboard}">User Dashboard</a></li>
           <li><a th:href="@{/admin/login}">Admin Login</a></li>
@@ -174,7 +189,7 @@
       </div>
       <div class="col-md-4">
         <h5>Contact</h5>
-        <ul class="list-unstyled text-muted">
+        <ul class="list-unstyled text">
           <li><i class="bi bi-geo-alt me-2"></i>Hyderabad, Telangana, India</li>
           <li><i class="bi bi-envelope me-2"></i>support@dsr-gold.local</li>
           <li><i class="bi bi-telephone me-2"></i>+91 90000 00000</li>
@@ -187,7 +202,7 @@
       </div>
     </div>
     <hr class="my-4"/>
-    <div class="d-flex justify-content-between flex-column flex-md-row text-muted small">
+    <div class="d-flex justify-content-between flex-column flex-md-row text small">
       <span>© 2025 D.S.R Finance Limited. All rights reserved.</span>
       <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
     </div>

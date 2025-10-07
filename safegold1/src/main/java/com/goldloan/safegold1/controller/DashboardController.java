@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 import com.goldloan.safegold1.repository.InquiryRepository;
-import com.goldloan.safegold1.model.Inquiry;
 import java.util.stream.Collectors;
 
 @Controller

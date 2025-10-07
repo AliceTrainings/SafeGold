@@ -4,6 +4,8 @@ import com.goldloan.safegold1.model.User;
 import com.goldloan.safegold1.repository.UserRepository;
 import com.goldloan.safegold1.model.Product;
 import com.goldloan.safegold1.repository.ProductRepository;
+import com.goldloan.safegold1.repository.InquiryRepository;
+import com.goldloan.safegold1.model.Inquiry;
 import com.goldloan.safegold1.repository.LoanRepository;
 import com.goldloan.safegold1.model.Loan;
 import jakarta.servlet.http.HttpSession;
@@ -23,11 +25,13 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final InquiryRepository inquiryRepository;
     private final LoanRepository loanRepository;
 
-    public AdminController(UserRepository userRepository, ProductRepository productRepository, LoanRepository loanRepository) {
+    public AdminController(UserRepository userRepository, ProductRepository productRepository, InquiryRepository inquiryRepository, LoanRepository loanRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.inquiryRepository = inquiryRepository;
         this.loanRepository = loanRepository;
     }
 
@@ -132,8 +136,8 @@ public class AdminController {
         if (admin == null) {
             return "redirect:/admin/login";
         }
-        // Do not show inquiries in admin dashboard anymore
-        model.addAttribute("inquiries", java.util.Collections.emptyList());
+        java.util.List<Inquiry> inquiries = inquiryRepository.findAll();
+        model.addAttribute("inquiries", inquiries);
         return "admin-inquiries";
     }
 
