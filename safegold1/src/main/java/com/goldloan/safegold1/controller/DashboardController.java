@@ -3,13 +3,19 @@ package com.goldloan.safegold1.controller;
 import com.goldloan.safegold1.model.Loan;
 import com.goldloan.safegold1.model.User;
 import com.goldloan.safegold1.repository.LoanRepository;
+import com.goldloan.safegold1.service.ReportService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import com.goldloan.safegold1.repository.InquiryRepository;
+import com.goldloan.safegold1.model.Inquiry;
 import java.util.stream.Collectors;
 
 @Controller
@@ -17,9 +23,13 @@ import java.util.stream.Collectors;
 public class DashboardController {
 
     private final LoanRepository loanRepository;
+    private final ReportService reportService;
+    private final InquiryRepository inquiryRepository;
 
-    public DashboardController(LoanRepository loanRepository) {
+    public DashboardController(LoanRepository loanRepository, ReportService reportService, InquiryRepository inquiryRepository) {
         this.loanRepository = loanRepository;
+        this.reportService = reportService;
+        this.inquiryRepository = inquiryRepository;
     }
 
     @GetMapping({"", "/"})
@@ -53,6 +63,23 @@ public class DashboardController {
         model.addAttribute("pastLoans", pastLoans);
         model.addAttribute("paymentHistory", paymentHistory);
 
+        // Show inquiries only to the user (not admin dashboard)
+        model.addAttribute("inquiries", inquiryRepository.findAll());
+
         return "dashboard"; // Thymeleaf template
+    }
+
+    @GetMapping("/download/pdf")
+    public ResponseEntity<byte[]> downloadAllAsPdf(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(302).header(HttpHeaders.LOCATION, "/users/login").build();
+        }
+        List<Loan> loans = loanRepository.findByUserIdWithPayments(user.getId());
+        byte[] pdf = reportService.buildLoansAndPaymentsPdf(loans, "Loans & Payments Report");
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=loans-payments.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 }

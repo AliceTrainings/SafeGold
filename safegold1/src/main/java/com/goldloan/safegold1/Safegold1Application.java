@@ -27,6 +27,23 @@ public class Safegold1Application {
                 admin.setRole("ADMIN");
                 return userRepository.save(admin);
             });
+
+            // Ensure at least 5 demo customers exist
+            long nonAdminUsers = userRepository.findAll().stream()
+                    .filter(u -> !"ADMIN".equalsIgnoreCase(u.getRole()))
+                    .count();
+            if (nonAdminUsers < 5) {
+                int toCreate = (int) (5 - nonAdminUsers);
+                for (int i = 1; i <= toCreate; i++) {
+                    User u = new User();
+                    u.setName("Demo User " + i);
+                    u.setEmail("demo" + i + "@safegold.local");
+                    u.setMobileNumber("900000000" + i);
+                    u.setPassword("password" + i);
+                    u.setRole("USER");
+                    userRepository.save(u);
+                }
+            }
         };
     }
 }

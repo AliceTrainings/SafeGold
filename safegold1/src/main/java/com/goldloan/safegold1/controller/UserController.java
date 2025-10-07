@@ -3,9 +3,9 @@ package com.goldloan.safegold1.controller;
 import com.goldloan.safegold1.model.User;
 import com.goldloan.safegold1.repository.UserRepository;
 import com.goldloan.safegold1.repository.ProductRepository;
-import com.goldloan.safegold1.repository.InquiryRepository;
 import com.goldloan.safegold1.model.Product;
 import com.goldloan.safegold1.model.Inquiry;
+import com.goldloan.safegold1.repository.InquiryRepository;
 import com.goldloan.safegold1.service.OtpService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -94,12 +94,20 @@ public class UserController {
     @PostMapping("/products/{id}/inquire")
     public String submitInquiry(@PathVariable Long id,
                                 @ModelAttribute Inquiry inquiry,
-                                Model model) {
+                                Model model,
+                                HttpSession session) {
         Product p = productRepository.findById(id).orElse(null);
         if (p == null) {
             return "redirect:/users/products";
         }
         inquiry.setProduct(p);
+        // associate to user if logged in
+        Object userObj = session.getAttribute("user");
+        if (userObj instanceof com.goldloan.safegold1.model.User u) {
+            inquiry.setName(u.getName() != null ? u.getName() : inquiry.getName());
+            inquiry.setEmail(u.getEmail() != null ? u.getEmail() : inquiry.getEmail());
+            inquiry.setPhone(u.getMobileNumber() != null ? u.getMobileNumber() : inquiry.getPhone());
+        }
         inquiryRepository.save(inquiry);
         return "redirect:/users/products/" + id + "?inquiry=success";
     }
