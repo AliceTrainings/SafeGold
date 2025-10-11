@@ -3,50 +3,218 @@
 <head>
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="/static/style.css" rel="stylesheet"/>
+    <link href="/static/admin-style.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">SafeGold Admin</a>
+    <a class="navbar-brand" href="#">
+      <img src="/static/images/logo.png" alt="SafeGold" height="30" class="me-2">
+      SafeGold Admin
+    </a>
     <div class="d-flex">
-      <a class="btn btn-outline-light" th:href="@{/admin/logout}">Logout</a>
+      <a class="btn btn-outline-light" th:href="@{/admin/logout}">
+        <i class="fas fa-sign-out-alt me-1"></i>Logout
+      </a>
     </div>
   </div>
-  </nav>
+</nav>
 
 <div class="container py-4">
-  <h3 class="mb-4">Welcome, <span th:text="${admin.name}">Admin</span></h3>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">
+      <i class="fas fa-tachometer-alt me-2 text-primary"></i>
+      Welcome, <span th:text="${admin.name}">Admin</span>
+    </h3>
+    <div class="text-muted">
+      <i class="fas fa-calendar-alt me-1"></i>
+      <span th:text="${#temporals.format(#temporals.createNow(), 'dd MMM yyyy')}">Today</span>
+    </div>
+  </div>
 
-  <div class="row g-3">
-    <div class="col-md-4">
-      <div class="card shadow-sm p-3">
-        <h5>Total Users</h5>
-        <p class="display-6" th:text="${totalUsers}">0</p>
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <a class="btn btn-primary w-100 mb-2" th:href="@{/admin/products}">
+        <i class="fas fa-box me-2"></i>Manage Products
+      </a>
+    </div>
+    <div class="col-md-3">
+      <a class="btn btn-outline-primary w-100 mb-2" th:href="@{/users/products}">
+        <i class="fas fa-eye me-2"></i>View Products (User)
+      </a>
+    </div>
+    <div class="col-md-3">
+      <a class="btn btn-warning w-100 mb-2" th:href="@{/admin/loans}">
+        <i class="fas fa-money-bill-wave me-2"></i>Manage Loans
+      </a>
+    </div>
+    <div class="col-md-3">
+      <a class="btn btn-info w-100 mb-2" th:href="@{/admin/inquiries}">
+        <i class="fas fa-comments me-2"></i>View Inquiries
+      </a>
+    </div>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-3">
+      <div class="card admin-stat-card h-100">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-users fa-2x text-primary"></i>
+          </div>
+          <h5 class="card-title">Total Users</h5>
+          <p class="display-6 text-primary mb-0" th:text="${totalUsers}">0</p>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm p-3">
-        <h5>Active Loans</h5>
-        <p class="display-6" th:text="${activeLoans}">0</p>
+    <div class="col-md-3">
+      <div class="card admin-stat-card h-100">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-box fa-2x text-info"></i>
+          </div>
+          <h5 class="card-title">Total Products</h5>
+          <p class="display-6 text-info mb-0" th:text="${totalProducts}">0</p>
+        </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm p-3">
-        <h5>Closed Loans</h5>
-        <p class="display-6" th:text="${closedLoans}">0</p>
+    <div class="col-md-3">
+      <div class="card admin-stat-card h-100" style="cursor: pointer;" onclick="window.location.href='/admin/inquiries'">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-comments fa-2x text-warning"></i>
+          </div>
+          <h5 class="card-title">Total Inquiries</h5>
+          <p class="display-6 text-warning mb-0" th:text="${totalInquiries}">0</p>
+          <small class="text-muted">Click to view details</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card admin-stat-card h-100" style="cursor: pointer;" onclick="showActiveLoans()">
+        <div class="card-body text-center">
+          <div class="mb-3">
+            <i class="fas fa-money-bill-wave fa-2x text-success"></i>
+          </div>
+          <h5 class="card-title">Active Loans</h5>
+          <p class="display-6 text-success mb-0" th:text="${activeLoans}">0</p>
+          <small class="text-muted">Click to view details</small>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="mt-4">
-    <a class="btn btn-primary me-2" th:href="@{/admin/products}">Manage Products</a>
-    <a class="btn btn-secondary" th:href="@{/users/products}">View Products (User)</a>
-    <a class="btn btn-outline-dark ms-2 disabled" aria-disabled="true">Inquiries moved to user dashboard</a>
-    <a class="btn btn-warning ms-2" th:href="@{/admin/loans}">Manage Loans</a>
+  <!-- Active Loans Modal -->
+  <div class="modal fade" id="activeLoansModal" tabindex="-1" aria-labelledby="activeLoansModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="activeLoansModalLabel">
+            <i class="fas fa-money-bill-wave me-2"></i>Active Loans Details
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table admin-table table-hover">
+              <thead>
+                <tr>
+                  <th><i class="fas fa-hashtag me-1"></i>ID</th>
+                  <th><i class="fas fa-user me-1"></i>User</th>
+                  <th><i class="fas fa-rupee-sign me-1"></i>Amount</th>
+                  <th><i class="fas fa-percentage me-1"></i>Interest</th>
+                  <th><i class="fas fa-calendar me-1"></i>Tenure</th>
+                  <th><i class="fas fa-gem me-1"></i>Gold Description</th>
+                  <th><i class="fas fa-calendar-alt me-1"></i>Start Date</th>
+                  <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="activeLoansTableBody">
+                <!-- Active loans will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-primary" th:href="@{/admin/loans}">
+            <i class="fas fa-edit me-1"></i>Manage All Loans
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
+
+  
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function showActiveLoans() {
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('activeLoansModal'));
+    modal.show();
+    
+    // Load active loans data
+    loadActiveLoans();
+}
+
+function loadActiveLoans() {
+    // Fetch active loans from the server
+    fetch('/admin/loans/active')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('activeLoansTableBody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No active loans found</td></tr>';
+                return;
+            }
+            
+            data.forEach(loan => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${loan.id}</td>
+                    <td>${loan.user ? loan.user.name : 'N/A'}</td>
+                    <td>₹${loan.amount.toLocaleString()}</td>
+                    <td>${loan.interestRate}%</td>
+                    <td>${loan.tenure} months</td>
+                    <td>${loan.goldDescription || 'N/A'}</td>
+                    <td>${new Date(loan.startDate).toLocaleDateString()}</td>
+                    <td>
+                        <form action="/admin/loans/${loan.id}/status" method="post" class="d-inline">
+                            <select class="form-select form-select-sm" name="status" onchange="this.form.submit()">
+                                <option value="Active" ${loan.status === 'Active' ? 'selected' : ''}>Active</option>
+                                <option value="Closed" ${loan.status === 'Closed' ? 'selected' : ''}>Closed</option>
+                            </select>
+                        </form>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading active loans:', error);
+            const tbody = document.getElementById('activeLoansTableBody');
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error loading loans</td></tr>';
+        });
+}
+
+// Add click animation to the active loans card
+document.addEventListener('DOMContentLoaded', function() {
+    const activeLoansCard = document.querySelector('.admin-stat-card:nth-child(2)');
+    if (activeLoansCard) {
+        activeLoansCard.addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    }
+});
+</script>
 
 </body>
 </html>

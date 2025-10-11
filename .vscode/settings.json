@@ -10,8 +10,8 @@
             "server": "localhost",
             "port": 3306,
             "driver": "MySQL",
-            "name": "cursordb",
-            "database": "cursordb",
+            "name": "goldloan",
+            "database": "goldloan",
             "username": "root"
         }
     ]

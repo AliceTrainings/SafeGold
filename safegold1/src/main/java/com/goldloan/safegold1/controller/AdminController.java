@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -71,8 +72,10 @@ public class AdminController {
             return "redirect:/admin/login";
         }
         model.addAttribute("admin", admin);
-        // Optionally add high-level stats placeholders for the template
+        // Add high-level stats for the template
         model.addAttribute("totalUsers", userRepository.count());
+        model.addAttribute("totalProducts", productRepository.count());
+        model.addAttribute("totalInquiries", inquiryRepository.count());
         model.addAttribute("activeLoans", 0);
         model.addAttribute("closedLoans", 0);
         return "admin-dashboard";
@@ -216,6 +219,16 @@ public class AdminController {
             loanRepository.save(loan);
         }
         return "redirect:/admin/loans";
+    }
+
+    @GetMapping("/loans/active")
+    public ResponseEntity<java.util.List<Loan>> getActiveLoans(HttpSession session) {
+        User admin = (User) session.getAttribute("admin");
+        if (admin == null) {
+            return ResponseEntity.status(401).build();
+        }
+        java.util.List<Loan> activeLoans = loanRepository.findByStatus("Active");
+        return ResponseEntity.ok(activeLoans);
     }
 
     @GetMapping("/products/{id}/edit")
