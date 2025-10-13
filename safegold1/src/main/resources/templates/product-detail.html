@@ -89,16 +89,59 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
-      <form th:action="@{'/users/products/' + ${product.id} + '/inquire'}" method="post" class="mt-4">
+      <!-- Error Message -->
+      <div th:if="${param.error != null}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Error!</strong> <span th:text="${param.error[0]}">An error occurred while processing your request.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <form th:action="@{'/users/products/' + ${product.id} + '/inquire'}" method="post" class="mt-4" id="inquiryForm">
         <h5>Inquiry</h5>
         <div class="row g-2">
-          <div class="col-md-4"><input class="form-control" name="name" placeholder="Your name" required></div>
-          <div class="col-md-4"><input class="form-control" type="email" name="email" placeholder="Email"></div>
-          <div class="col-md-4"><input class="form-control" name="phone" placeholder="Phone" required></div>
-          <div class="col-12"><textarea class="form-control" name="message" rows="3" placeholder="Your message"></textarea></div>
-          <div class="col-12"><button class="btn btn-primary mt-2" type="submit">Send Inquiry</button></div>
+          <div class="col-md-4">
+            <input class="form-control" name="name" placeholder="Your name" required 
+                   minlength="2" maxlength="100" 
+                   oninvalid="this.setCustomValidity('Please enter your name (2-100 characters)')"
+                   oninput="this.setCustomValidity('')">
+          </div>
+          <div class="col-md-4">
+            <input class="form-control" type="email" name="email" placeholder="Email" 
+                   maxlength="255"
+                   oninvalid="this.setCustomValidity('Please enter a valid email address')"
+                   oninput="this.setCustomValidity('')">
+          </div>
+          <div class="col-md-4">
+            <input class="form-control" name="phone" placeholder="Phone" required 
+                   pattern="[0-9]{10}" minlength="10" maxlength="10"
+                   oninvalid="this.setCustomValidity('Please enter a valid 10-digit phone number')"
+                   oninput="this.setCustomValidity('')">
+          </div>
+          <div class="col-12">
+            <textarea class="form-control" name="message" rows="3" placeholder="Your message" 
+                      maxlength="2000"></textarea>
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary mt-2" type="submit" id="submitBtn">
+              <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner" role="status" aria-hidden="true"></span>
+              <span id="submitText">Send Inquiry</span>
+            </button>
+          </div>
         </div>
       </form>
+
+      <script>
+        document.getElementById('inquiryForm').addEventListener('submit', function(e) {
+          const submitBtn = document.getElementById('submitBtn');
+          const loadingSpinner = document.getElementById('loadingSpinner');
+          const submitText = document.getElementById('submitText');
+          
+          // Show loading state
+          submitBtn.disabled = true;
+          loadingSpinner.classList.remove('d-none');
+          submitText.textContent = 'Sending...';
+        });
+      </script>
     </div>
   </div>
 </div>
@@ -141,7 +184,8 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/rates.js}"></script>
+
 </body>
 </html>
 

@@ -407,32 +407,70 @@ section.bg-light .btn-link:hover {
     height: 200px;
   }
 }
-.metal-row {
-    font-weight: bold;
-    color: #fff;
-    font-size: 0.9rem;
-}
-
-.metal {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    transform: translateX(-50px);
-    opacity: 0;
-    animation: slideIn 1s forwards;
-}
-
-.metal.gold { animation-delay: 0.2s; color: #FFD700; }
-.metal.silver { animation-delay: 0.4s; color: #C0C0C0; }
-.metal.platinum { animation-delay: 0.6s; color: #E5E4E2; }
-
-@keyframes slideIn {
-    to {
-        transform: translateX(0);
-        opacity: 1;
+ /* === Full Width Ticker Bar === */
+    .metal-bar {
+  
+      top: 0;
+      left: 0;
+      width: 100%;
+      
+      z-index: 9999;
+      background: linear-gradient(90deg, #fff7c4, #fff);
+      border-bottom: 2px solid #f0d14b;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
     }
-}
 
+    /* === Scrolling Content === */
+    .metal-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 70px;
+      white-space: nowrap;
+      animation: moveLeft 10s linear infinite;
+    }
+
+    /* === Metal Styling === */
+    .metal {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .label {
+      color: #333;
+      text-transform: uppercase;
+      font-size: 1rem;
+    }
+
+    .gold .price {
+      color: #d4af37;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+    }
+
+    .silver .price {
+      color: #c0c0c0;
+      text-shadow: 0 0 8px rgba(192, 192, 192, 0.4);
+    }
+
+    .platinum .price {
+      color: #8e8e8e;
+      text-shadow: 0 0 8px rgba(120, 120, 120, 0.4);
+    }
+
+    /* === Animation === */
+    @keyframes moveLeft {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Pause on hover (optional) */
+    .metal-track:hover {
+      animation-play-state: paused;
+      cursor: pointer;
+    }
 /* =========================
    USER DASHBOARD STYLES
 ========================= */

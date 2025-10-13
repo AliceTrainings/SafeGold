@@ -37,34 +37,7 @@
 
 <a href="/users/logout" class="btn btn-secondary mt-3">Logout</a>
 
-<!-- Inquiries Section -->
-<div class="mt-4">
-    <h5>Your Product Inquiries</h5>
-    <table class="table table-striped" id="inquiriesTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Product</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Message</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="inq : ${inquiries}">
-                <td th:text="${inq.id}"></td>
-                <td th:text="${inq.createdAt}"></td>
-                <td><span th:text="${inq.product.name}"></span></td>
-                <td th:text="${inq.name}"></td>
-                <td th:text="${inq.phone}"></td>
-                <td th:text="${inq.email}"></td>
-                <td th:text="${inq.message}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+
 
 <!-- Active Loans Modal -->
 <div class="modal fade" id="activeLoansModal" tabindex="-1">
@@ -206,7 +179,7 @@ $(document).ready(function() {
     $('#activeLoansTable').DataTable();
     $('#pastLoansTable').DataTable();
     $('#paymentsTable').DataTable();
-    $('#inquiriesTable').DataTable();
+    
 });
 </script>
 

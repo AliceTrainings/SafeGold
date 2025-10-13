@@ -40,21 +40,24 @@
   </div>
 </nav>
 <!-- Metal Prices Row -->
-<div class="d-flex gap-4 ms-auto align-items-center metal-row">
-    <div class="metal gold">
-        <span class="label">Gold:</span>
-        <span class="price" id="gold-price">--</span>
-    </div>
-    <div class="metal silver">
-        <span class="label">Silver:</span>
-        <span class="price" id="silver-price">--</span>
-    </div>
-    <div class="metal platinum">
-        <span class="label">Platinum:</span>
-        <span class="price" id="platinum-price">--</span>
-    </div>
-</div>
 
+     <div class="metal-bar">
+      <div class="metal-track">
+        <div class="metal gold">
+          <span class="label">Gold:</span>
+          <span class="price" id="gold-price">--</span>
+        </div>
+        <div class="metal silver">
+          <span class="label">Silver:</span>
+          <span class="price" id="silver-price">--</span>
+        </div>
+        <div class="metal platinum">
+          <span class="label">Platinum:</span>
+          <span class="price" id="platinum-price">--</span>
+        </div>
+      </div>
+    </div>
+    
 
 <!-- HERO -->
 <section class="sg-hero">
@@ -207,7 +210,6 @@
       <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
     </div>
   </div>
-</footer>
-
+</footer><script th:src="@{/rates.js}"></script>
 </body>
 </html>

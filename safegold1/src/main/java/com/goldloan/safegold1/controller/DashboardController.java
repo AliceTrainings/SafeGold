@@ -23,12 +23,12 @@ public class DashboardController {
 
     private final LoanRepository loanRepository;
     private final ReportService reportService;
-    private final InquiryRepository inquiryRepository;
+    
 
     public DashboardController(LoanRepository loanRepository, ReportService reportService, InquiryRepository inquiryRepository) {
         this.loanRepository = loanRepository;
         this.reportService = reportService;
-        this.inquiryRepository = inquiryRepository;
+        
     }
 
     @GetMapping({"", "/"})
@@ -62,8 +62,7 @@ public class DashboardController {
         model.addAttribute("pastLoans", pastLoans);
         model.addAttribute("paymentHistory", paymentHistory);
 
-        // Show inquiries only to the user (not admin dashboard)
-        model.addAttribute("inquiries", inquiryRepository.findAll());
+        
 
         return "dashboard"; // Thymeleaf template
     }

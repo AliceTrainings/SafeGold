@@ -7,10 +7,18 @@ import com.goldloan.safegold1.model.Product;
 import com.goldloan.safegold1.model.Inquiry;
 import com.goldloan.safegold1.repository.InquiryRepository;
 import com.goldloan.safegold1.service.OtpService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
 import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.Optional;
 
@@ -39,6 +47,29 @@ public class UserController {
         }
         return "index";
     }
+
+        // In your Spring Boot controller
+    @RestController
+    @RequestMapping("/api/metals")
+    public class MetalController {
+
+        @GetMapping("/{metal}")
+        public ResponseEntity<String> getMetalPrice(@PathVariable String metal) {
+            String apiKey = "goldapi-5z18ld4gkwkcye86-io";
+            String url = "https://www.goldapi.io/api/" + metal + "/INR";
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("x-access-token", apiKey);
+            headers.set("Content-Type", "application/json");
+
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+
+            return response;
+        }
+    }
+
 
     @GetMapping("/products")
     public String browseProducts(@RequestParam(required = false) String q,
@@ -93,23 +124,64 @@ public class UserController {
 
     @PostMapping("/products/{id}/inquire")
     public String submitInquiry(@PathVariable Long id,
-                                @ModelAttribute Inquiry inquiry,
+                                @RequestParam String name,
+                                @RequestParam String phone,
+                                @RequestParam(required = false) String email,
+                                @RequestParam(required = false) String message,
                                 Model model,
                                 HttpSession session) {
-        Product p = productRepository.findById(id).orElse(null);
-        if (p == null) {
-            return "redirect:/users/products";
+        try {
+            Product p = productRepository.findById(id).orElse(null);
+            if (p == null) {
+                model.addAttribute("errorMessage", "Product not found. The product you're trying to inquire about may have been removed.");
+                model.addAttribute("errorDetails", "Product ID: " + id + " not found in database");
+                return "error";
+            }
+            
+            // Validate required fields
+            if (name == null || name.trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Name is required for inquiry submission.");
+                model.addAttribute("errorDetails", "Please provide your name in the inquiry form.");
+                return "error";
+            }
+            
+            if (phone == null || phone.trim().isEmpty()) {
+                model.addAttribute("errorMessage", "Phone number is required for inquiry submission.");
+                model.addAttribute("errorDetails", "Please provide your phone number in the inquiry form.");
+                return "error";
+            }
+            
+            // Validate phone number format
+            if (!phone.matches("\\d{10}")) {
+                model.addAttribute("errorMessage", "Invalid phone number format.");
+                model.addAttribute("errorDetails", "Phone number must be exactly 10 digits.");
+                return "error";
+            }
+            
+            // Create a new Inquiry object to avoid entity state issues
+            Inquiry inquiry = new Inquiry();
+            inquiry.setProduct(p);
+            inquiry.setName(name.trim());
+            inquiry.setPhone(phone.trim());
+            inquiry.setEmail(email != null ? email.trim() : null);
+            inquiry.setMessage(message != null ? message.trim() : null);
+            
+            // associate to user if logged in
+            Object userObj = session.getAttribute("user");
+            if (userObj instanceof com.goldloan.safegold1.model.User u) {
+                inquiry.setName(u.getName() != null ? u.getName() : inquiry.getName());
+                inquiry.setEmail(u.getEmail() != null ? u.getEmail() : inquiry.getEmail());
+                inquiry.setPhone(u.getMobileNumber() != null ? u.getMobileNumber() : inquiry.getPhone());
+            }
+            
+            inquiryRepository.save(inquiry);
+            return "redirect:/users/products/" + id + "?inquiry=success";
+            
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to submit your inquiry. Please try again later.");
+            model.addAttribute("errorDetails", "Database error: " + e.getMessage());
+            return "error";
         }
-        inquiry.setProduct(p);
-        // associate to user if logged in
-        Object userObj = session.getAttribute("user");
-        if (userObj instanceof com.goldloan.safegold1.model.User u) {
-            inquiry.setName(u.getName() != null ? u.getName() : inquiry.getName());
-            inquiry.setEmail(u.getEmail() != null ? u.getEmail() : inquiry.getEmail());
-            inquiry.setPhone(u.getMobileNumber() != null ? u.getMobileNumber() : inquiry.getPhone());
-        }
-        inquiryRepository.save(inquiry);
-        return "redirect:/users/products/" + id + "?inquiry=success";
     }
 
     // Phone number page
@@ -248,5 +320,13 @@ public class UserController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/users/";
+    }
+
+    // Global error handler for this controller
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception e, Model model) {
+        model.addAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+        model.addAttribute("errorDetails", "Error: " + e.getMessage());
+        return "error";
     }
 }

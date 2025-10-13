@@ -20,7 +20,8 @@ public class Inquiry {
     @Column(length = 2000)
     private String message;
 
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -42,6 +43,11 @@ public class Inquiry {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
 
 
