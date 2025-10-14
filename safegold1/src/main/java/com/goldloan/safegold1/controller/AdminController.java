@@ -9,6 +9,9 @@ import com.goldloan.safegold1.model.Inquiry;
 import com.goldloan.safegold1.repository.LoanRepository;
 import com.goldloan.safegold1.model.Loan;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,8 +79,13 @@ public class AdminController {
         model.addAttribute("totalUsers", userRepository.count());
         model.addAttribute("totalProducts", productRepository.count());
         model.addAttribute("totalInquiries", inquiryRepository.count());
-        model.addAttribute("activeLoans", 0);
-        model.addAttribute("closedLoans", 0);
+        
+        // Count active and closed loans
+        long activeLoansCount = loanRepository.findByStatus("Active").size();
+        long closedLoansCount = loanRepository.findByStatus("Closed").size();
+        
+        model.addAttribute("activeLoans", activeLoansCount);
+        model.addAttribute("closedLoans", closedLoansCount);
         return "admin-dashboard";
     }
 
@@ -133,16 +141,25 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    @GetMapping("/inquiries")
-    public String viewInquiries(HttpSession session, Model model) {
-        User admin = (User) session.getAttribute("admin");
-        if (admin == null) {
-            return "redirect:/admin/login";
-        }
-        java.util.List<Inquiry> inquiries = inquiryRepository.findAll();
-        model.addAttribute("inquiries", inquiries);
-        return "admin-inquiries";
+@GetMapping("/inquiries")
+public String viewInquiries(HttpSession session, Model model) {
+    User admin = (User) session.getAttribute("admin");
+    if (admin == null) {
+        return "redirect:/admin/login";
     }
+
+    List<Inquiry> inquiries = inquiryRepository.findAll();
+    System.out.println("Fetched inquiries: " + inquiries.size());
+    for (Inquiry i : inquiries) {
+        System.out.println("Inquiry: " + i.getName() + " | Product: " + 
+            (i.getProduct() != null ? i.getProduct().getName() : "null"));
+    }
+
+    model.addAttribute("inquiries", inquiries);
+    return "admin-inquiries";
+}
+
+
 
     // ADMIN LOANS
     @GetMapping("/loans")
@@ -292,6 +309,43 @@ public class AdminController {
     public String adminLogout(HttpSession session) {
         session.removeAttribute("admin");
         return "redirect:/admin/login";
+    }
+
+
+    // User list page
+    @GetMapping("/users")
+    public String listUsers(HttpSession session, Model model) {
+        User admin = (User) session.getAttribute("admin");
+        if (admin == null) {
+            return "redirect:/admin/login";
+        }
+        
+        List<User> users = userRepository.findAll();
+        model.addAttribute("admin", admin);
+        model.addAttribute("users", users);
+        return "admin-users";
+    }
+
+    // User details page
+    @GetMapping("/users/{id}")
+    public String viewUserDetails(@PathVariable Long id, HttpSession session, Model model) {
+        User admin = (User) session.getAttribute("admin");
+        if (admin == null) {
+            return "redirect:/admin/login";
+        }
+        
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            List<Loan> userLoans = loanRepository.findByUserId(id);
+            
+            model.addAttribute("admin", admin);
+            model.addAttribute("user", user);
+            model.addAttribute("userLoans", userLoans);
+            return "admin-user-details";
+        } else {
+            return "redirect:/admin/users";
+        }
     }
 }
 

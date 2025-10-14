@@ -10,8 +10,10 @@ public class Inquiry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id", nullable = true)
     private Product product;
+
 
     private String name;
     private String email;

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/admin-style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="/static/images/logo.png" alt="SafeGold" height="30" class="me-2">
+      SafeGold Admin
+    </a>
+    <div class="d-flex">
+      <a class="btn btn-outline-light me-2" th:href="@{/admin/users}">
+        <i class="fas fa-arrow-left me-1"></i>Back to Users
+      </a>
+      <a class="btn btn-outline-light me-2" th:href="@{/admin/dashboard}">
+        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+      </a>
+      <a class="btn btn-outline-light" th:href="@{/admin/logout}">
+        <i class="fas fa-sign-out-alt me-1"></i>Logout
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="mb-0">
+      <i class="fas fa-user me-2 text-primary"></i>
+      User Details
+    </h3>
+    <div class="text-muted">
+      <i class="fas fa-calendar-alt me-1"></i>
+      <span th:text="${#temporals.format(#temporals.createNow(), 'dd MMM yyyy')}">Today</span>
+    </div>
+  </div>
+
+  <!-- User Information Card -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-user-circle me-2"></i>User Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-bold">User ID:</label>
+                <p class="text-muted" th:text="${user.id}"></p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Full Name:</label>
+                <p class="text-muted" th:text="${user.name}"></p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Email:</label>
+                <p class="text-muted" th:text="${user.email}"></p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Mobile Number:</label>
+                <p class="text-muted" th:text="${user.mobileNumber ?: 'Not provided'}"></p>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Role:</label>
+                <span class="badge" th:classappend="${user.role == 'ADMIN' ? 'bg-danger' : 'bg-success'}" 
+                      th:text="${user.role}"></span>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Total Loans:</label>
+                <span class="badge bg-primary" th:text="${userLoans.size()}">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-chart-pie me-2"></i>Loan Statistics
+          </h5>
+        </div>
+        <div class="card-body text-center">
+          <div class="row">
+            <div class="col-6">
+              <div class="mb-3">
+                <i class="fas fa-money-bill-wave fa-2x text-success mb-2"></i>
+                <h6>Active Loans</h6>
+                <span class="badge bg-success fs-6" th:text="${#lists.size(userLoans.?[status == 'Active'])}">0</span>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="mb-3">
+                <i class="fas fa-check-circle fa-2x text-info mb-2"></i>
+                <h6>Closed Loans</h6>
+                <span class="badge bg-info fs-6" th:text="${#lists.size(userLoans.?[status == 'Closed'])}">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3">
+            <i class="fas fa-rupee-sign fa-2x text-warning mb-2"></i>
+            <h6>Total Loan Amount</h6>
+            <span class="badge bg-warning fs-6" th:text="'₹' + ${#aggregates.sum(userLoans.![amount])}">₹0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Loans Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="fas fa-money-bill-wave me-2"></i>User Loans
+        <span class="badge bg-primary ms-2" th:text="${userLoans.size()}">0</span>
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table admin-table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th><i class="fas fa-hashtag me-1"></i>Loan ID</th>
+              <th><i class="fas fa-rupee-sign me-1"></i>Amount</th>
+              <th><i class="fas fa-percentage me-1"></i>Interest Rate</th>
+              <th><i class="fas fa-calendar me-1"></i>Tenure</th>
+              <th><i class="fas fa-gem me-1"></i>Gold Description</th>
+              <th><i class="fas fa-calendar-alt me-1"></i>Start Date</th>
+              <th><i class="fas fa-info-circle me-1"></i>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="loan : ${userLoans}">
+              <td th:text="${loan.id}"></td>
+              <td th:text="'₹' + ${#numbers.formatDecimal(loan.amount, 1, 2)}"></td>
+              <td th:text="${loan.interestRate} + '%'"></td>
+              <td th:text="${loan.tenure} + ' months'"></td>
+              <td th:text="${loan.goldDescription ?: 'N/A'}"></td>
+              <td th:text="${#temporals.format(loan.startDate, 'dd MMM yyyy')}"></td>
+              <td>
+                <span class="badge" th:classappend="${loan.status == 'Active' ? 'bg-success' : 'bg-secondary'}" 
+                      th:text="${loan.status}"></span>
+              </td>
+            </tr>
+            <tr th:if="${userLoans.isEmpty()}">
+              <td colspan="7" class="text-center text-muted py-4">
+                <i class="fas fa-money-bill-wave fa-2x mb-2 d-block"></i>
+                No loans found for this user
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
