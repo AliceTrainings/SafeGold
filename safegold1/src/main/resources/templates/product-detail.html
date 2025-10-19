@@ -12,7 +12,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
+    <style>
+        body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+        
+        .watchlist-btn {
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .watchlist-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            border-color: #dc3545;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        
+        .watchlist-btn i {
+            transition: all 0.3s ease;
+        }
+        
+        .watchlist-btn:hover i {
+            transform: scale(1.2);
+        }
+        
+        #carouselImages:hover .watchlist-btn {
+            opacity: 0.8;
+        }
+    </style>
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
@@ -46,13 +74,13 @@
 <div class="container py-4">
   <div class="row g-4">
     <div class="col-md-6">
-      <div id="carouselImages" class="carousel slide" data-bs-ride="carousel">
+      <div id="carouselImages" class="carousel slide position-relative" data-bs-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img class="d-block w-100" th:src="${product.imageUrl}" alt="image">
+            <img class="d-block w-100" th:src="${product.imageUrl}" alt="image" style="height: 400px; object-fit: cover;">
           </div>
           <div class="carousel-item" th:each="img : ${#strings.arraySplit(product.gallery, ',')}">
-            <img class="d-block w-100" th:src="${img}" alt="image">
+            <img class="d-block w-100" th:src="${img}" alt="image" style="height: 400px; object-fit: cover;">
           </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
@@ -63,6 +91,16 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
+        
+        <!-- Heart icon for watchlist (only for logged in users) -->
+        <div class="position-absolute top-0 end-0 p-3" th:if="${user != null}">
+          <form th:action="@{'/users/watchlist/' + ${product.id} + '/add'}" method="post" class="d-inline">
+            <button type="submit" class="btn btn-light btn-lg rounded-circle shadow-sm watchlist-btn" 
+                    title="Add to Watchlist" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; opacity: 0.8; transition: all 0.3s ease;">
+              <i class="bi bi-heart text-danger" style="font-size: 1.2rem;"></i>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
     <div class="col-md-6">
@@ -73,13 +111,21 @@
       <h4 class="text-success">₹ <span th:text="${product.price}">0</span></h4>
       <p class="mt-3" th:text="${product.description}">Description</p>
 
-      <div class="d-flex gap-2">
+      <div th:if="${user != null}" class="d-flex gap-2">
         <form th:action="@{'/users/watchlist/' + ${product.id} + '/add'}" method="post">
-          <button class="btn btn-outline-secondary" type="submit">Add to Watchlist</button>
+          <button class="btn btn-outline-primary" type="submit">
+            Add to Watchlist
+          </button>
         </form>
         <form th:action="@{'/users/watchlist/' + ${product.id} + '/remove'}" method="post">
-          <button class="btn btn-outline-danger" type="submit">Remove</button>
+          <button class="btn btn-outline-danger" type="submit">
+            Remove from Watchlist
+          </button>
         </form>
+      </div>
+      <div th:if="${user == null}" class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        <a th:href="@{/users/phone}" class="alert-link">Login</a> to add items to your watchlist
       </div>
 
       <!-- Success Message -->
@@ -89,10 +135,24 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 
+      <!-- Watchlist Success Message -->
+      <div th:if="${successMessage != null}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${successMessage}">Success message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
       <!-- Error Message -->
       <div th:if="${param.error != null}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
         <i class="bi bi-exclamation-triangle me-2"></i>
         <strong>Error!</strong> <span th:text="${param.error[0]}">An error occurred while processing your request.</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Watchlist Error Message -->
+      <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${errorMessage}">Error message</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
 

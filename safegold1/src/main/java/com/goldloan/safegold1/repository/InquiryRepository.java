@@ -9,7 +9,3 @@ import java.util.List;
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     List<Inquiry> findByProduct(Product product);
 }
-
-
-
-

@@ -1,1 +1,159 @@
- 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist - D.S.R Gold Loan</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sg-navbar">
+  <div class="container">
+    <a class="navbar-brand fw-bold" th:href="@{/users/}"><span class="text-gradient">D.S.R</span> Gold Loan</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navContent">
+      <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
+      </ul>
+
+      <div th:if="${user != null}" class="d-flex align-items-center gap-3">
+        <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
+        <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-heart-fill text-danger me-2"></i>My Watchlist</h2>
+            <p class="text-muted">Your saved jewelry items</p>
+        </div>
+        <div>
+            <a th:href="@{/users/products}" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i>Browse More Items
+            </a>
+        </div>
+    </div>
+
+    <!-- Watchlist Items -->
+    <div th:if="${watchlist != null and !watchlist.isEmpty()}" class="row g-4">
+        <div th:each="product : ${watchlist}" class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="position-relative">
+                    <a th:href="@{'/users/products/' + ${product.id}}" class="d-block">
+                        <img th:src="${product.imageUrl}" class="card-img-top" style="height: 250px; object-fit: cover; cursor: pointer;" alt="Product Image">
+                    </a>
+                    <div class="position-absolute top-0 end-0 p-2">
+                        <form th:action="@{'/users/watchlist/' + ${product.id} + '/remove'}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm rounded-circle" 
+                                    onclick="return confirm('Remove this item from your watchlist?')"
+                                    title="Remove from watchlist">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                    <p class="card-text text-muted small mb-2">
+                        <span th:text="${product.category}">Category</span> • 
+                        <span th:text="${product.grams}">0</span>g • 
+                        <span th:text="${product.carats}">0</span>K
+                    </p>
+                    <p class="card-text" th:text="${product.description}" style="font-size: 0.9rem; flex-grow: 1;">Description</p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="text-success mb-0">₹<span th:text="${product.price}">0</span></h5>
+                            <a th:href="@{'/users/products/' + ${product.id}}" class="btn btn-primary btn-sm">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${watchlist == null or watchlist.isEmpty()}" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-heart text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h4 class="text-muted">Your watchlist is empty</h4>
+        <p class="text-muted mb-4">Start adding items you love to your watchlist!</p>
+        <a th:href="@{/users/products}" class="btn btn-primary">
+            <i class="bi bi-search me-1"></i>Browse Jewelry
+        </a>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${successMessage != null}" class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${successMessage}">Success message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${errorMessage != null}" class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${errorMessage}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="sg-footer">
+  <div class="container py-5">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5>About D.S.R</h5>
+        <p class="text">We provide transparent gold loans with secure storage and a curated jewellery collection. Trusted by thousands of families.</p>
+      </div>
+      <div class="col-md-4">
+        <h5>Quick Links</h5>
+        <ul class="list-unstyled text-muted">
+          <li><a th:href="@{/users/products}">Shop Jewellery</a></li>
+          <li><a th:href="@{/dashboard}">User Dashboard</a></li>
+          <li><a th:href="@{/admin/login}">Admin Login</a></li>
+          <li><a th:href="@{/users/phone}">Login / Register</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h5>Contact</h5>
+        <ul class="list-unstyled text-muted">
+          <li><i class="bi bi-geo-alt me-2"></i>Hyderabad, Telangana, India</li>
+          <li><i class="bi bi-envelope me-2"></i>support@dsr-gold.local</li>
+          <li><i class="bi bi-telephone me-2"></i>+91 90000 00000</li>
+        </ul>
+        <div class="d-flex gap-2 mt-2">
+          <a href="#" class="sg-social"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="sg-social"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="sg-social"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4"/>
+    <div class="d-flex justify-content-between flex-column flex-md-row text-muted small">
+      <span>© 2025 D.S.R Finance Limited. All rights reserved.</span>
+      <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

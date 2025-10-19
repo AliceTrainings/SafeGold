@@ -8,6 +8,7 @@ import com.goldloan.safegold1.repository.InquiryRepository;
 import com.goldloan.safegold1.model.Inquiry;
 import com.goldloan.safegold1.repository.LoanRepository;
 import com.goldloan.safegold1.model.Loan;
+import com.goldloan.safegold1.service.FileUploadService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -31,12 +33,14 @@ public class AdminController {
     private final ProductRepository productRepository;
     private final InquiryRepository inquiryRepository;
     private final LoanRepository loanRepository;
+    private final FileUploadService fileUploadService;
 
-    public AdminController(UserRepository userRepository, ProductRepository productRepository, InquiryRepository inquiryRepository, LoanRepository loanRepository) {
+    public AdminController(UserRepository userRepository, ProductRepository productRepository, InquiryRepository inquiryRepository, LoanRepository loanRepository, FileUploadService fileUploadService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.inquiryRepository = inquiryRepository;
         this.loanRepository = loanRepository;
+        this.fileUploadService = fileUploadService;
     }
 
     @GetMapping("/login")
@@ -117,28 +121,42 @@ public class AdminController {
                                 @RequestParam String category,
                                 @RequestParam Double grams,
                                 @RequestParam Integer carats,
-                                @RequestParam String imageUrl,
+                                @RequestParam MultipartFile imageFile,
                                 @RequestParam(required = false) String gallery,
                                 @RequestParam Double price,
                                 @RequestParam(required = false) String description,
                                 @RequestParam(required = false) String tags,
-                                HttpSession session) {
+                                HttpSession session,
+                                Model model) {
         User admin = (User) session.getAttribute("admin");
         if (admin == null) {
             return "redirect:/admin/login";
         }
-        Product p = new Product();
-        p.setName(name.trim());
-        p.setCategory(category.trim());
-        p.setGrams(grams);
-        p.setCarats(carats);
-        p.setImageUrl(imageUrl.trim());
-        p.setGallery(gallery);
-        p.setPrice(price);
-        p.setDescription(description);
-        p.setTags(tags);
-        productRepository.save(p);
-        return "redirect:/admin/products";
+        
+        try {
+            // Upload image file
+            String imageUrl = fileUploadService.uploadImage(imageFile);
+            if (imageUrl == null) {
+                model.addAttribute("error", "Failed to upload image. Please try again.");
+                return "admin-product-form";
+            }
+            
+            Product p = new Product();
+            p.setName(name.trim());
+            p.setCategory(category.trim());
+            p.setGrams(grams);
+            p.setCarats(carats);
+            p.setImageUrl(imageUrl);
+            p.setGallery(gallery);
+            p.setPrice(price);
+            p.setDescription(description);
+            p.setTags(tags);
+            productRepository.save(p);
+            return "redirect:/admin/products?success=Product created successfully";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error creating product: " + e.getMessage());
+            return "admin-product-form";
+        }
     }
 
 @GetMapping("/inquiries")
@@ -268,31 +286,51 @@ public String viewInquiries(HttpSession session, Model model) {
                                 @RequestParam String category,
                                 @RequestParam Double grams,
                                 @RequestParam Integer carats,
-                                @RequestParam String imageUrl,
+                                @RequestParam(required = false) MultipartFile imageFile,
                                 @RequestParam(required = false) String gallery,
                                 @RequestParam Double price,
                                 @RequestParam(required = false) String description,
                                 @RequestParam(required = false) String tags,
-                                HttpSession session) {
+                                HttpSession session,
+                                Model model) {
         User admin = (User) session.getAttribute("admin");
         if (admin == null) {
             return "redirect:/admin/login";
         }
+        
         Product p = productRepository.findById(id).orElse(null);
         if (p == null) {
             return "redirect:/admin/products";
         }
-        p.setName(name.trim());
-        p.setCategory(category.trim());
-        p.setGrams(grams);
-        p.setCarats(carats);
-        p.setImageUrl(imageUrl.trim());
-        p.setGallery(gallery);
-        p.setPrice(price);
-        p.setDescription(description);
-        p.setTags(tags);
-        productRepository.save(p);
-        return "redirect:/admin/products";
+        
+        try {
+            // Update image only if new file is provided
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // Delete old image
+                fileUploadService.deleteImage(p.getImageUrl());
+                
+                // Upload new image
+                String imageUrl = fileUploadService.uploadImage(imageFile);
+                if (imageUrl != null) {
+                    p.setImageUrl(imageUrl);
+                }
+            }
+            
+            p.setName(name.trim());
+            p.setCategory(category.trim());
+            p.setGrams(grams);
+            p.setCarats(carats);
+            p.setGallery(gallery);
+            p.setPrice(price);
+            p.setDescription(description);
+            p.setTags(tags);
+            productRepository.save(p);
+            return "redirect:/admin/products?success=Product updated successfully";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error updating product: " + e.getMessage());
+            model.addAttribute("product", p);
+            return "admin-product-form";
+        }
     }
 
     @PostMapping("/products/{id}/delete")
@@ -301,8 +339,16 @@ public String viewInquiries(HttpSession session, Model model) {
         if (admin == null) {
             return "redirect:/admin/login";
         }
-        productRepository.deleteById(id);
-        return "redirect:/admin/products";
+        
+        // Get product to delete associated image
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null) {
+            // Delete associated image file
+            fileUploadService.deleteImage(product.getImageUrl());
+            productRepository.deleteById(id);
+        }
+        
+        return "redirect:/admin/products?success=Product deleted successfully";
     }
 
     @GetMapping("/logout")
@@ -348,5 +394,3 @@ public String viewInquiries(HttpSession session, Model model) {
         }
     }
 }
-
-

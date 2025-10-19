@@ -7,6 +7,7 @@ import com.goldloan.safegold1.model.Product;
 import com.goldloan.safegold1.model.Inquiry;
 import com.goldloan.safegold1.repository.InquiryRepository;
 import com.goldloan.safegold1.service.OtpService;
+import com.goldloan.safegold1.service.WatchlistService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import java.util.Optional;
@@ -30,12 +32,14 @@ public class UserController {
     private final OtpService otpService;
     private final ProductRepository productRepository;
     private final InquiryRepository inquiryRepository;
+    private final WatchlistService watchlistService;
 
-    public UserController(UserRepository userRepository, OtpService otpService, ProductRepository productRepository, InquiryRepository inquiryRepository) {
+    public UserController(UserRepository userRepository, OtpService otpService, ProductRepository productRepository, InquiryRepository inquiryRepository, WatchlistService watchlistService) {
         this.userRepository = userRepository;
         this.otpService = otpService;
         this.productRepository = productRepository;
         this.inquiryRepository = inquiryRepository;
+        this.watchlistService = watchlistService;
     }
 
     // Home page
@@ -80,7 +84,8 @@ public class UserController {
                                  @RequestParam(required = false) Double maxGrams,
                                  @RequestParam(required = false) Integer minCarats,
                                  @RequestParam(required = false) Integer maxCarats,
-                                 Model model) {
+                                 Model model,
+                                 HttpSession session) {
         java.util.List<Product> products = productRepository.findAll();
 
         if (q != null && !q.isBlank()) {
@@ -99,6 +104,9 @@ public class UserController {
             products = productRepository.findByCaratsBetween(minCarats, maxCarats);
         }
 
+        // Get user from session
+        User user = (User) session.getAttribute("user");
+        
         model.addAttribute("products", products);
         model.addAttribute("q", q);
         model.addAttribute("category", category);
@@ -108,17 +116,23 @@ public class UserController {
         model.addAttribute("maxGrams", maxGrams);
         model.addAttribute("minCarats", minCarats);
         model.addAttribute("maxCarats", maxCarats);
+        model.addAttribute("user", user);
         return "products";
     }
 
     @GetMapping("/products/{id}")
-    public String productDetail(@PathVariable Long id, Model model) {
+    public String productDetail(@PathVariable Long id, Model model, HttpSession session) {
         Product p = productRepository.findById(id).orElse(null);
         if (p == null) {
             return "redirect:/users/products";
         }
+        
+        // Get user from session
+        User user = (User) session.getAttribute("user");
+        
         model.addAttribute("product", p);
         model.addAttribute("inquiry", new Inquiry());
+        model.addAttribute("user", user);
         return "product-detail";
     }
 
@@ -288,31 +302,91 @@ public class UserController {
     }
 
     @PostMapping("/watchlist/{productId}/add")
-    public String addToWatchlist(@PathVariable Long productId, HttpSession session) {
+    public String addToWatchlist(@PathVariable Long productId, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/users/login";
         }
-        Product p = productRepository.findById(productId).orElse(null);
-        if (p != null) {
-            user.getWatchlist().add(p);
-            userRepository.save(user);
+        
+        System.out.println("Adding product " + productId + " to watchlist for user " + user.getId());
+        
+        boolean added = watchlistService.addToWatchlist(user.getId(), productId);
+        if (added) {
+            model.addAttribute("successMessage", "Product added to watchlist successfully!");
+            System.out.println("Successfully added product " + productId + " to watchlist");
+        } else {
+            model.addAttribute("errorMessage", "Product is already in your watchlist or could not be added.");
+            System.out.println("Failed to add product " + productId + " to watchlist");
         }
+        
         return "redirect:/users/products/" + productId;
     }
 
     @PostMapping("/watchlist/{productId}/remove")
-    public String removeFromWatchlist(@PathVariable Long productId, HttpSession session) {
+    public String removeFromWatchlist(@PathVariable Long productId, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/users/login";
         }
-        Product p = productRepository.findById(productId).orElse(null);
-        if (p != null) {
-            user.getWatchlist().remove(p);
-            userRepository.save(user);
+        
+        System.out.println("Removing product " + productId + " from watchlist for user " + user.getId());
+        
+        boolean removed = watchlistService.removeFromWatchlist(user.getId(), productId);
+        if (removed) {
+            model.addAttribute("successMessage", "Product removed from watchlist successfully!");
+            System.out.println("Successfully removed product " + productId + " from watchlist");
+        } else {
+            model.addAttribute("errorMessage", "Product was not in your watchlist or could not be removed.");
+            System.out.println("Failed to remove product " + productId + " from watchlist");
         }
+        
         return "redirect:/users/products/" + productId;
+    }
+
+    @GetMapping("/watchlist")
+    public String viewWatchlist(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/users/login";
+        }
+        
+        // Refresh user data to get latest watchlist
+        User freshUser = userRepository.findById(user.getId()).orElse(user);
+        session.setAttribute("user", freshUser);
+        
+        System.out.println("Viewing watchlist for user " + freshUser.getId() + " with " + 
+                          (freshUser.getWatchlist() != null ? freshUser.getWatchlist().size() : 0) + " items");
+        
+        model.addAttribute("user", freshUser);
+        model.addAttribute("watchlist", freshUser.getWatchlist());
+        return "watchlist";
+    }
+
+    // Debug endpoint to check watchlist status
+    @GetMapping("/debug/watchlist")
+    @ResponseBody
+    public String debugWatchlist(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "User not logged in";
+        }
+        
+        User freshUser = userRepository.findById(user.getId()).orElse(user);
+        int count = freshUser.getWatchlist() != null ? freshUser.getWatchlist().size() : 0;
+        
+        StringBuilder result = new StringBuilder();
+        result.append("User ID: ").append(freshUser.getId()).append("\n");
+        result.append("User Name: ").append(freshUser.getName()).append("\n");
+        result.append("Watchlist Count: ").append(count).append("\n");
+        result.append("Watchlist Items:\n");
+        
+        if (freshUser.getWatchlist() != null) {
+            for (Product product : freshUser.getWatchlist()) {
+                result.append("- ").append(product.getName()).append(" (ID: ").append(product.getId()).append(")\n");
+            }
+        }
+        
+        return result.toString();
     }
 
     // Logout

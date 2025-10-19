@@ -51,7 +51,3 @@ public class Inquiry {
         createdAt = LocalDateTime.now();
     }
 }
-
-
-
-

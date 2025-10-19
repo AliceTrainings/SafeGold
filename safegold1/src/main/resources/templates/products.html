@@ -12,7 +12,60 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
+    <style>
+        body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}
+        
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        
+        .watchlist-heart {
+            opacity: 0;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+        
+        .product-card:hover .watchlist-heart {
+            opacity: 1;
+        }
+        
+        .watchlist-heart-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .watchlist-heart-btn:hover {
+            background-color: rgba(255, 255, 255, 1);
+            border-color: #dc3545;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        
+        .watchlist-heart-btn i {
+            color: #dc3545;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .watchlist-heart-btn:hover i {
+            transform: scale(1.2);
+        }
+    </style>
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
@@ -26,9 +79,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" th:href="@{/users/}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/users/products}">Jewellery</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item" th:if="${user != null}"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
       </ul>
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
@@ -75,20 +129,62 @@
     </div>
   </form>
 
-  <div class="row row-cols-1 row-cols-md-3 g-3">
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
     <div class="col" th:each="p : ${products}">
-      <div class="card h-100">
-        <img th:src="${p.imageUrl}" class="card-img-top" alt="product">
-        <div class="card-body">
-          <h5 class="card-title" th:text="${p.name}">Item Name</h5>
-          <p class="card-text mb-1">Category: <span th:text="${p.category}">Ring</span></p>
-          <p class="card-text mb-1">Grams: <span th:text="${p.grams}">0</span></p>
-          <p class="card-text mb-1">Karat: <span th:text="${p.carats}">0</span>K</p>
-          <p class="card-text fw-semibold">Price: ₹<span th:text="${p.price}">0</span></p>
-          <a class="btn btn-outline-primary btn-sm" th:href="@{'/users/products/' + ${p.id}}">View</a>
+      <div class="card h-100 shadow-sm product-card">
+        <div class="position-relative">
+          <a th:href="@{'/users/products/' + ${p.id}}" class="d-block">
+            <img th:src="${p.imageUrl}" class="card-img-top" style="height: 250px; object-fit: cover; cursor: pointer;" alt="Product Image">
+          </a>
+          <div class="position-absolute top-0 end-0 p-2">
+            <span class="badge bg-primary" th:text="${p.category}">Category</span>
+          </div>
+          <!-- Heart icon for watchlist (only for logged in users) -->
+          <div class="watchlist-heart" th:if="${user != null}">
+            <form th:action="@{'/users/watchlist/' + ${p.id} + '/add'}" method="post" class="d-inline">
+              <button type="submit" class="btn watchlist-heart-btn" title="Add to Watchlist">
+                <i class="bi bi-heart"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <h6 class="card-title" th:text="${p.name}">Item Name</h6>
+          <div class="mb-2">
+            <small class="text-muted">
+              <i class="bi bi-scale me-1"></i><span th:text="${p.grams}">0</span>g • 
+              <i class="bi bi-gem me-1"></i><span th:text="${p.carats}">0</span>K
+            </small>
+          </div>
+          <p class="card-text text-truncate" th:text="${p.description}" style="font-size: 0.9rem; flex-grow: 1;">Description</p>
+          <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="text-success mb-0">₹<span th:text="${p.price}">0</span></h5>
+              <small class="text-muted" th:if="${p.tags != null and !p.tags.isEmpty()}">
+                <i class="bi bi-tags me-1"></i><span th:text="${#strings.substring(p.tags, 0, 15)} + '...'">Tags</span>
+              </small>
+            </div>
+            <div class="d-flex gap-2">
+              <a class="btn btn-primary btn-sm flex-fill" th:href="@{'/users/products/' + ${p.id}}">
+                <i class="bi bi-eye me-1"></i>View Details
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Empty State -->
+  <div th:if="${products == null or products.isEmpty()}" class="text-center py-5">
+    <div class="mb-4">
+      <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
+    </div>
+    <h4 class="text-muted">No products found</h4>
+    <p class="text-muted mb-4">Try adjusting your search criteria or browse all products.</p>
+    <a th:href="@{/users/products}" class="btn btn-primary">
+      <i class="bi bi-arrow-clockwise me-1"></i>View All Products
+    </a>
   </div>
 </div>
 <!-- FOOTER -->

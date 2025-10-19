@@ -1,63 +1,208 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>New Product</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${product != null and product.id != null} ? 'Edit Product' : 'Add Product'">Product Form</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
 </head>
 <body class="bg-light">
 <div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Add Product</h3>
-    <a class="btn btn-secondary" th:href="@{/admin/products}">Back</a>
-  </div>
-  <div class="card shadow-sm p-4">
-    <form th:action="${product != null and product.id != null} ? @{'/admin/products/' + ${product.id}} : @{/admin/products}" method="post" enctype="multipart/form-data">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label">Item Name</label>
-          <input type="text" name="name" class="form-control" th:value="${product?.name}" required>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="bi bi-box-seam me-2"></i><span th:text="${product != null and product.id != null} ? 'Edit Product' : 'Add New Product'">Product Form</span></h3>
+        <a class="btn btn-outline-secondary" th:href="@{/admin/products}">
+            <i class="bi bi-arrow-left me-1"></i>Back to Products
+        </a>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${param.success != null}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>
+        <span th:text="${param.success[0]}">Success message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${error != null}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${error}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Product Information</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${product != null and product.id != null} ? @{'/admin/products/' + ${product.id}} : @{/admin/products}" 
+                          method="post" enctype="multipart/form-data" id="productForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Item Name <span class="text-danger">*</span></label>
+                                <input type="text" name="name" class="form-control" th:value="${product?.name}" 
+                                       placeholder="Enter product name" required maxlength="100">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Category <span class="text-danger">*</span></label>
+                                <select name="category" class="form-select" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Ring" th:selected="${product?.category == 'Ring'}">Ring</option>
+                                    <option value="Necklace" th:selected="${product?.category == 'Necklace'}">Necklace</option>
+                                    <option value="Bracelet" th:selected="${product?.category == 'Bracelet'}">Bracelet</option>
+                                    <option value="Earring" th:selected="${product?.category == 'Earring'}">Earring</option>
+                                    <option value="Chain" th:selected="${product?.category == 'Chain'}">Chain</option>
+                                    <option value="Bangle" th:selected="${product?.category == 'Bangle'}">Bangle</option>
+                                    <option value="Pendant" th:selected="${product?.category == 'Pendant'}">Pendant</option>
+                                    <option value="Set" th:selected="${product?.category == 'Set'}">Set</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Weight (Grams) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" name="grams" class="form-control" 
+                                       th:value="${product?.grams}" placeholder="0.00" required min="0.01">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Purity (Carats) <span class="text-danger">*</span></label>
+                                <select name="carats" class="form-select" required>
+                                    <option value="">Select Purity</option>
+                                    <option value="18" th:selected="${product?.carats == 18}">18K</option>
+                                    <option value="20" th:selected="${product?.carats == 20}">20K</option>
+                                    <option value="22" th:selected="${product?.carats == 22}">22K</option>
+                                    <option value="24" th:selected="${product?.carats == 24}">24K</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Price (₹) <span class="text-danger">*</span></label>
+                                <input type="number" step="0.01" name="price" class="form-control" 
+                                       th:value="${product?.price}" placeholder="0.00" required min="0.01">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Product Image <span class="text-danger">*</span></label>
+                                <input type="file" name="imageFile" class="form-control" accept="image/*" 
+                                       th:required="${product == null or product.id == null}">
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Supported formats: JPG, PNG, GIF, WebP, AVIF. Max size: 5MB
+                                </div>
+                                <div th:if="${product != null and product.imageUrl != null}" class="mt-2">
+                                    <small class="text-muted">Current image:</small><br>
+                                    <img th:src="${product.imageUrl}" alt="Current product image" 
+                                         class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Gallery Images (comma-separated URLs)</label>
+                                <textarea name="gallery" class="form-control" rows="3" 
+                                          placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                                          th:text="${product?.gallery}"></textarea>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Enter image URLs separated by commas for additional product images
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Tags (comma-separated)</label>
+                                <input type="text" name="tags" class="form-control" 
+                                       th:value="${product?.tags}" 
+                                       placeholder="gold, traditional, wedding, etc">
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Enter tags separated by commas to help with search and filtering
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-control" name="description" rows="4" 
+                                          placeholder="Enter detailed product description..."
+                                          th:text="${product?.description}"></textarea>
+                            </div>
+                        </div>
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-1"></i>
+                                <span th:text="${product != null and product.id != null} ? 'Update Product' : 'Create Product'">Save</span>
+                            </button>
+                            <a th:href="@{/admin/products}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-          <label class="form-label">Category</label>
-          <input type="text" name="category" class="form-control" th:value="${product?.category}" placeholder="Ring, Necklace, etc" required>
+        
+        <!-- Help Panel -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-question-circle me-2"></i>Help & Tips</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="text-primary">Image Guidelines</h6>
+                        <ul class="small text-muted mb-0">
+                            <li>Use high-quality, well-lit images</li>
+                            <li>Show the product from multiple angles</li>
+                            <li>Ensure the product fills most of the frame</li>
+                            <li>Use consistent background colors</li>
+                        </ul>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="text-primary">Pricing Tips</h6>
+                        <ul class="small text-muted mb-0">
+                            <li>Consider current gold rates</li>
+                            <li>Factor in craftsmanship costs</li>
+                            <li>Research similar products</li>
+                            <li>Include all applicable taxes</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-primary">SEO & Search</h6>
+                        <ul class="small text-muted mb-0">
+                            <li>Use descriptive product names</li>
+                            <li>Add relevant tags for filtering</li>
+                            <li>Write detailed descriptions</li>
+                            <li>Include key features and benefits</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-          <label class="form-label">Grams</label>
-          <input type="number" step="0.01" name="grams" class="form-control" th:value="${product?.grams}" required>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Carats</label>
-          <input type="number" name="carats" class="form-control" th:value="${product?.carats}" required>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Product Image</label>
-          <input type="file" name="imageFile" class="form-control" accept="image/*" required>
-          <small class="form-text text-muted">Select an image file (JPG, PNG, WebP)</small>
-        </div>
-        <div class="col-md-12">
-          <label class="form-label">Gallery (comma-separated URLs)</label>
-          <input type="text" name="gallery" class="form-control" th:value="${product?.gallery}">
-        </div>
-        <div class="col-md-4">
-          <label class="form-label">Price (₹)</label>
-          <input type="number" step="0.01" name="price" class="form-control" th:value="${product?.price}" required>
-        </div>
-        <div class="col-md-8">
-          <label class="form-label">Tags (comma-separated)</label>
-          <input type="text" name="tags" class="form-control" th:value="${product?.tags}">
-        </div>
-        <div class="col-12">
-          <label class="form-label">Description</label>
-          <textarea class="form-control" name="description" rows="3" th:text="${product?.description}"></textarea>
-        </div>
-      </div>
-      <div class="mt-3">
-        <button type="submit" class="btn btn-primary">Save</button>
-      </div>
-    </form>
-  </div>
-  </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Form validation
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        const imageFile = document.querySelector('input[name="imageFile"]');
+        const isEdit = imageFile.hasAttribute('required');
+        
+        if (isEdit && (!imageFile.files || imageFile.files.length === 0)) {
+            e.preventDefault();
+            alert('Please select an image file for the product.');
+            imageFile.focus();
+            return false;
+        }
+        
+        // Validate file size if file is selected
+        if (imageFile.files && imageFile.files.length > 0) {
+            const file = imageFile.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            
+            if (file.size > maxSize) {
+                e.preventDefault();
+                alert('File size too large. Please select an image smaller than 5MB.');
+                imageFile.focus();
+                return false;
+            }
+        }
+    });
+</script>
 </body>
 </html>
-
-

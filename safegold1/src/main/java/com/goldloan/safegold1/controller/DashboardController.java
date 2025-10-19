@@ -4,6 +4,7 @@ import com.goldloan.safegold1.model.Loan;
 import com.goldloan.safegold1.model.User;
 import com.goldloan.safegold1.repository.LoanRepository;
 import com.goldloan.safegold1.service.ReportService;
+import com.goldloan.safegold1.service.WatchlistService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,12 +24,12 @@ public class DashboardController {
 
     private final LoanRepository loanRepository;
     private final ReportService reportService;
-    
+    private final WatchlistService watchlistService;
 
-    public DashboardController(LoanRepository loanRepository, ReportService reportService, InquiryRepository inquiryRepository) {
+    public DashboardController(LoanRepository loanRepository, ReportService reportService, InquiryRepository inquiryRepository, WatchlistService watchlistService) {
         this.loanRepository = loanRepository;
         this.reportService = reportService;
-        
+        this.watchlistService = watchlistService;
     }
 
     @GetMapping({"", "/"})
@@ -56,13 +57,16 @@ public class DashboardController {
                 .flatMap(loan -> loan.getPayments().stream())
                 .collect(Collectors.toList());
 
+        // Get watchlist count
+        int watchlistCount = watchlistService.getWatchlistCount(user.getId());
+        System.out.println("Dashboard for user " + user.getId() + " - watchlist count: " + watchlistCount);
+
         // Add attributes to model
         model.addAttribute("user", user);
         model.addAttribute("activeLoans", activeLoans);
         model.addAttribute("pastLoans", pastLoans);
         model.addAttribute("paymentHistory", paymentHistory);
-
-        
+        model.addAttribute("watchlistCount", watchlistCount);
 
         return "dashboard"; // Thymeleaf template
     }
