@@ -71,6 +71,7 @@
 <body>
 
 <!-- NAVBAR -->
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg sg-navbar">
   <div class="container">
     <a class="navbar-brand fw-bold" th:href="@{/users/}"><span class="text-gradient">D.S.R</span> Gold Loan</a>
@@ -80,22 +81,18 @@
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
         <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
-        <li class="nav-item"><a class="nav-link active" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
-        <li class="nav-item" th:if="${user != null}"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
       </ul>
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
         <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
         <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
       </div>
-      <div th:if="${user == null}" class="d-flex gap-2">
-        <a class="btn btn-outline-dark" th:href="@{/users/phone}">Login</a>
-        <a class="btn btn-primary" th:href="@{/users/products}">Browse Products</a>
-      </div>
     </div>
   </div>
-  </nav>
+</nav>
 <div class="container py-4">
   <h3 class="mb-3">Browse Products</h3>
   <form class="row g-2 mb-3" method="get">
@@ -134,7 +131,12 @@
       <div class="card h-100 shadow-sm product-card">
         <div class="position-relative">
           <a th:href="@{'/users/products/' + ${p.id}}" class="d-block">
-            <img th:src="${p.imageUrl}" class="card-img-top" style="height: 250px; object-fit: cover; cursor: pointer;" alt="Product Image">
+            <img th:src="${p.imageUrl}" 
+                 th:onerror="this.src='/images/placeholder-product.svg'" 
+                 class="card-img-top" 
+                 style="height: 250px; object-fit: cover; cursor: pointer;" 
+                 alt="Product Image"
+                 onerror="this.src='/images/placeholder-product.svg'">
           </a>
           <div class="position-absolute top-0 end-0 p-2">
             <span class="badge bg-primary" th:text="${p.category}">Category</span>
@@ -227,5 +229,3 @@
 </footer>
 </body>
 </html>
-
-

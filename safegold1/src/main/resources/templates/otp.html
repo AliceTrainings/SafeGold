@@ -16,7 +16,6 @@
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
-
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg sg-navbar">
   <div class="container">
@@ -26,22 +25,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" th:href="@{/users/}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
       </ul>
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
         <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
         <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
       </div>
-      <div th:if="${user == null}" class="d-flex gap-2">
-        <a class="btn btn-outline-dark" th:href="@{/users/phone}">Login</a>
-        <a class="btn btn-primary" th:href="@{/users/products}">Browse Products</a>
-      </div>
     </div>
   </div>
-  </nav>
+</nav>
 <body class="container mt-5">
     <h2>Enter OTP</h2>
 
@@ -120,11 +116,11 @@
     <div class="row g-4">
       <div class="col-md-4">
         <h5>About D.S.R</h5>
-        <p class="text">We provide transparent gold loans with secure storage and a curated jewellery collection. Trusted by thousands of families.</p>
+        <p class="texT">We provide transparent gold loans with secure storage and a curated jewellery collection. Trusted by thousands of families.</p>
       </div>
       <div class="col-md-4">
         <h5>Quick Links</h5>
-        <ul class="list-unstyled text-muted">
+        <ul class="list-unstyled text">
           <li><a th:href="@{/users/products}">Shop Jewellery</a></li>
           <li><a th:href="@{/dashboard}">User Dashboard</a></li>
           <li><a th:href="@{/admin/login}">Admin Login</a></li>
@@ -133,7 +129,7 @@
       </div>
       <div class="col-md-4">
         <h5>Contact</h5>
-        <ul class="list-unstyled text-muted">
+        <ul class="list-unstyled text">
           <li><i class="bi bi-geo-alt me-2"></i>Hyderabad, Telangana, India</li>
           <li><i class="bi bi-envelope me-2"></i>support@dsr-gold.local</li>
           <li><i class="bi bi-telephone me-2"></i>+91 90000 00000</li>
@@ -146,7 +142,7 @@
       </div>
     </div>
     <hr class="my-4"/>
-    <div class="d-flex justify-content-between flex-column flex-md-row text-muted small">
+    <div class="d-flex justify-content-between flex-column flex-md-row text small">
       <span>© 2025 D.S.R Finance Limited. All rights reserved.</span>
       <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
     </div>

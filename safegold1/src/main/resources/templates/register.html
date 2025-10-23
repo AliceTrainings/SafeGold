@@ -16,7 +16,6 @@
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
-
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg sg-navbar">
   <div class="container">
@@ -26,22 +25,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" th:href="@{/users/}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
       </ul>
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
         <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
         <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
       </div>
-      <div th:if="${user == null}" class="d-flex gap-2">
-        <a class="btn btn-outline-dark" th:href="@{/users/phone}">Login</a>
-        <a class="btn btn-primary" th:href="@{/users/products}">Browse Products</a>
-      </div>
     </div>
   </div>
-  </nav>
+</nav>
 <body class="bg-light">
 <div class="container vh-100 d-flex justify-content-center align-items-center">
     <div class="card shadow p-4" style="max-width: 400px; width: 100%;">

@@ -362,6 +362,27 @@ public class UserController {
         return "watchlist";
     }
 
+    // Method to refresh user session
+    @GetMapping("/refresh-session")
+    public String refreshSession(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            User freshUser = userRepository.findById(user.getId()).orElse(user);
+            session.setAttribute("user", freshUser);
+            return "redirect:/users/watchlist";
+        }
+        return "redirect:/users/login";
+    }
+
+    // Debug endpoint to check static resources
+    @GetMapping("/debug/static")
+    @ResponseBody
+    public String debugStatic() {
+        return "Static resources test: <br>" +
+               "<img src='/images/placeholder-product.svg' alt='Test Image' style='width: 100px; height: 100px;'><br>" +
+               "If you can see the placeholder image above, static resources are working correctly.";
+    }
+
     // Debug endpoint to check watchlist status
     @GetMapping("/debug/watchlist")
     @ResponseBody

@@ -49,28 +49,4 @@ public class Product {
 
     public String getGallery() { return gallery; }
     public void setGallery(String gallery) { this.gallery = gallery; }
-
-    // equals and hashCode methods for proper Set operations
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return id != null && id.equals(product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", category='" + category + '\'' +
-                ", price=" + price +
-                '}';
-    }
 }

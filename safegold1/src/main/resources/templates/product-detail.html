@@ -45,6 +45,8 @@
 </head>
 <body>
 
+
+<!-- NAVBAR -->
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg sg-navbar">
   <div class="container">
@@ -54,22 +56,19 @@
     </button>
     <div class="collapse navbar-collapse" id="navContent">
       <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" th:href="@{/users/}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
         <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
       </ul>
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
         <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
         <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
       </div>
-      <div th:if="${user == null}" class="d-flex gap-2">
-        <a class="btn btn-outline-dark" th:href="@{/users/phone}">Login</a>
-        <a class="btn btn-primary" th:href="@{/users/products}">Browse Products</a>
-      </div>
     </div>
   </div>
-  </nav>
+</nav>
 <body>
 <div class="container py-4">
   <div class="row g-4">
@@ -77,7 +76,12 @@
       <div id="carouselImages" class="carousel slide position-relative" data-bs-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img class="d-block w-100" th:src="${product.imageUrl}" alt="image" style="height: 400px; object-fit: cover;">
+            <img class="d-block w-100" 
+                 th:src="${product.imageUrl}" 
+                 th:onerror="this.src='/images/placeholder-product.svg'" 
+                 alt="Product Image" 
+                 style="height: 400px; object-fit: cover;"
+                 onerror="this.src='/images/placeholder-product.svg'">
           </div>
           <div class="carousel-item" th:each="img : ${#strings.arraySplit(product.gallery, ',')}">
             <img class="d-block w-100" th:src="${img}" alt="image" style="height: 400px; object-fit: cover;">
@@ -248,5 +252,3 @@
 
 </body>
 </html>
-
-

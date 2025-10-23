@@ -84,10 +84,18 @@
                             <div class="col-12">
                                 <label class="form-label">Product Image <span class="text-danger">*</span></label>
                                 <input type="file" name="imageFile" class="form-control" accept="image/*" 
-                                       th:required="${product == null or product.id == null}">
+                                       th:required="${product == null or product.id == null}" id="imageFile">
                                 <div class="form-text">
                                     <i class="bi bi-info-circle me-1"></i>
-                                    Supported formats: JPG, PNG, GIF, WebP, AVIF. Max size: 5MB
+                                    <strong>Supported formats:</strong> JPG, PNG, GIF, WebP, AVIF<br>
+                                    <strong>Maximum file size:</strong> 5MB (5,242,880 bytes)<br>
+                                    <strong>Recommended:</strong> High-quality images with good lighting, showing the product clearly
+                                </div>
+                                <div id="fileInfo" class="mt-2" style="display: none;">
+                                    <div id="fileStatus" class="alert py-2">
+                                        <i id="fileIcon" class="bi me-1"></i>
+                                        <span id="fileName"></span> (<span id="fileSize"></span>)
+                                    </div>
                                 </div>
                                 <div th:if="${product != null and product.imageUrl != null}" class="mt-2">
                                     <small class="text-muted">Current image:</small><br>
@@ -178,6 +186,58 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // File size formatting function
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // File input change handler
+    document.getElementById('imageFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const fileInfo = document.getElementById('fileInfo');
+        const fileStatus = document.getElementById('fileStatus');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const fileIcon = document.getElementById('fileIcon');
+        
+        if (file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.style.display = 'block';
+            
+            // Check file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+            const isSupportedType = allowedTypes.includes(file.type);
+            
+            // Check file size
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const isWithinSizeLimit = file.size <= maxSize;
+            
+            if (!isSupportedType) {
+                // Red alert for unsupported file type
+                fileStatus.className = 'alert alert-danger py-2';
+                fileIcon.className = 'bi bi-exclamation-triangle me-1';
+                fileStatus.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i><strong>Unsupported file type!</strong> Please select JPG, PNG, GIF, WebP, or AVIF format.';
+            } else if (!isWithinSizeLimit) {
+                // Red alert for file size too large
+                fileStatus.className = 'alert alert-danger py-2';
+                fileIcon.className = 'bi bi-exclamation-triangle me-1';
+                fileStatus.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i><strong>File size too large!</strong> Maximum allowed: 5MB. Your file: ' + formatFileSize(file.size);
+            } else {
+                // Green alert for supported file
+                fileStatus.className = 'alert alert-success py-2';
+                fileIcon.className = 'bi bi-check-circle me-1';
+                fileStatus.innerHTML = '<i class="bi bi-check-circle me-1"></i><strong>File ready for upload!</strong> ' + file.name + ' (' + formatFileSize(file.size) + ')';
+            }
+        } else {
+            fileInfo.style.display = 'none';
+        }
+    });
+
     // Form validation
     document.getElementById('productForm').addEventListener('submit', function(e) {
         const imageFile = document.querySelector('input[name="imageFile"]');
@@ -195,9 +255,18 @@
             const file = imageFile.files[0];
             const maxSize = 5 * 1024 * 1024; // 5MB
             
+            // Validate file type first
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+            if (!allowedTypes.includes(file.type)) {
+                e.preventDefault();
+                alert('❌ Unsupported file type!\n\nPlease select a valid image file:\n• JPG/JPEG\n• PNG\n• GIF\n• WebP\n• AVIF\n\nYour file type: ' + file.type);
+                imageFile.focus();
+                return false;
+            }
+            
             if (file.size > maxSize) {
                 e.preventDefault();
-                alert('File size too large. Please select an image smaller than 5MB.');
+                alert('❌ File size too large!\n\nMaximum allowed: 5MB\nYour file: ' + formatFileSize(file.size) + '\n\nPlease select a smaller image file.');
                 imageFile.focus();
                 return false;
             }

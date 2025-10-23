@@ -54,7 +54,10 @@ public class FileUploadService {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Return relative URL
-            return "/images/" + uniqueFilename;
+            String imageUrl = "/images/" + uniqueFilename;
+            System.out.println("Image uploaded successfully: " + imageUrl);
+            System.out.println("File saved to: " + filePath.toString());
+            return imageUrl;
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -30,6 +30,7 @@
 
       <div th:if="${user != null}" class="d-flex align-items-center gap-3">
         <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
+        <span class="badge bg-success" title="Session Active">●</span>
         <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
       </div>
     </div>
@@ -43,7 +44,10 @@
             <h2><i class="bi bi-heart-fill text-danger me-2"></i>My Watchlist</h2>
             <p class="text-muted">Your saved jewelry items</p>
         </div>
-        <div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/users/refresh-session}" class="btn btn-outline-secondary btn-sm" title="Refresh session">
+                <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+            </a>
             <a th:href="@{/users/products}" class="btn btn-outline-primary">
                 <i class="bi bi-plus-circle me-1"></i>Browse More Items
             </a>
@@ -56,7 +60,12 @@
             <div class="card h-100 shadow-sm">
                 <div class="position-relative">
                     <a th:href="@{'/users/products/' + ${product.id}}" class="d-block">
-                        <img th:src="${product.imageUrl}" class="card-img-top" style="height: 250px; object-fit: cover; cursor: pointer;" alt="Product Image">
+                        <img th:src="${product.imageUrl}" 
+                             th:onerror="this.src='/images/placeholder-product.svg'" 
+                             class="card-img-top" 
+                             style="height: 250px; object-fit: cover; cursor: pointer;" 
+                             alt="Product Image"
+                             onerror="this.src='/images/placeholder-product.svg'">
                     </a>
                     <div class="position-absolute top-0 end-0 p-2">
                         <form th:action="@{'/users/watchlist/' + ${product.id} + '/remove'}" method="post" class="d-inline">
@@ -155,5 +164,52 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Session management and auto-refresh
+    let sessionCheckInterval;
+    
+    // Check session status every 5 minutes
+    function startSessionCheck() {
+        sessionCheckInterval = setInterval(function() {
+            fetch('/users/debug/watchlist')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes('User not logged in')) {
+                        // Session expired, redirect to login
+                        window.location.href = '/users/login';
+                    }
+                })
+                .catch(error => {
+                    console.log('Session check failed:', error);
+                });
+        }, 300000); // 5 minutes
+    }
+    
+    // Start session check when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        startSessionCheck();
+        
+        // Add click handler for refresh button
+        const refreshBtn = document.querySelector('a[href*="refresh-session"]');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i>Refreshing...';
+                this.classList.add('disabled');
+                
+                setTimeout(() => {
+                    window.location.href = this.href;
+                }, 1000);
+            });
+        }
+    });
+    
+    // Clean up interval when page unloads
+    window.addEventListener('beforeunload', function() {
+        if (sessionCheckInterval) {
+            clearInterval(sessionCheckInterval);
+        }
+    });
+</script>
 </body>
 </html>

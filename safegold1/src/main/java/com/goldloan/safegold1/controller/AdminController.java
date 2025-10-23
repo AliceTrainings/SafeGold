@@ -9,6 +9,7 @@ import com.goldloan.safegold1.model.Inquiry;
 import com.goldloan.safegold1.repository.LoanRepository;
 import com.goldloan.safegold1.model.Loan;
 import com.goldloan.safegold1.service.FileUploadService;
+import com.goldloan.safegold1.service.ProductPriceService;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
@@ -34,13 +35,15 @@ public class AdminController {
     private final InquiryRepository inquiryRepository;
     private final LoanRepository loanRepository;
     private final FileUploadService fileUploadService;
+    private final ProductPriceService productPriceService;
 
-    public AdminController(UserRepository userRepository, ProductRepository productRepository, InquiryRepository inquiryRepository, LoanRepository loanRepository, FileUploadService fileUploadService) {
+    public AdminController(UserRepository userRepository, ProductRepository productRepository, InquiryRepository inquiryRepository, LoanRepository loanRepository, FileUploadService fileUploadService, ProductPriceService productPriceService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.inquiryRepository = inquiryRepository;
         this.loanRepository = loanRepository;
         this.fileUploadService = fileUploadService;
+        this.productPriceService = productPriceService;
     }
 
     @GetMapping("/login")
@@ -349,6 +352,21 @@ public String viewInquiries(HttpSession session, Model model) {
         }
         
         return "redirect:/admin/products?success=Product deleted successfully";
+    }
+
+    @PostMapping("/products/update-prices")
+    public String updateAllProductPrices(HttpSession session) {
+        User admin = (User) session.getAttribute("admin");
+        if (admin == null) {
+            return "redirect:/admin/login";
+        }
+        
+        try {
+            productPriceService.updateAllProductPrices();
+            return "redirect:/admin/products?success=All product prices updated successfully based on current gold rates";
+        } catch (Exception e) {
+            return "redirect:/admin/products?error=Failed to update prices: " + e.getMessage();
+        }
     }
 
     @GetMapping("/logout")
