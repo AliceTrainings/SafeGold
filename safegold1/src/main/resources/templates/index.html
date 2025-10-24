@@ -14,74 +14,172 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg sg-navbar">
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar navbar-expand-lg shadow-sm fixed-top "style="background-color: #ffffff;">
   <div class="container">
-    <a class="navbar-brand fw-bold" th:href="@{/users/}"><span class="text-gradient">D.S.R</span> Gold Loan</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold fs-4" th:href="@{/users/}">
+      <span class="text-warning">D.S.R</span> Gold Loans
+    </a>
+
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+      aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navContent">
-      <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" th:href="@{/users/}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/dashboard}">Dashboard</a></li>
+
+    <!-- Search bar -->
+      <form class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
+        <input class="form-control form-control-sm rounded-pill" type="search"
+          placeholder="Search for jewellery..." aria-label="Search">
+      </form>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/users/}">
+            <i class="bi bi-house-door me-1"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/users/products}">
+            <i class="bi bi-gem me-1"></i> Jewellery
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/dashboard}">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </li>
+
+        <!-- Optional dropdown for user -->
+        <li class="nav-item dropdown" th:if="${user != null}">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+            <span th:text="${user.name}">User</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" th:href="@{/dashboard}">My Dashboard</a></li>
+            <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" th:href="@{/users/logout}">Logout</a></li>
+          </ul>
+        </li>
+
+        <!-- Login button if no user -->
+        <li class="nav-item" th:if="${user == null}">
+          <a class="btn btn-outline-warning btn-sm ms-lg-3" th:href="@{/users/phone}">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </a>
+        </li>
       </ul>
 
-      <div th:if="${user != null}" class="d-flex align-items-center gap-3">
-        <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
-        <a class="btn btn-outline-light btn-sm" th:href="@{/users/logout}">Logout</a>
-      </div>
-      <div th:if="${user == null}" class="d-flex gap-2">
-        <a class="btn btn-outline-light" th:href="@{/users/phone}">Login</a>
-        <a class="btn btn-gold" th:href="@{/users/products}">Browse Products</a>
-      </div>
+      
     </div>
   </div>
 </nav>
+
 <!-- Metal Prices Row -->
-
-     <div class="metal-bar">
-      <div class="metal-track">
-        <div class="metal gold">
-          <span class="label">Gold:</span>
-          <span class="price" id="gold-price">--</span>
-        </div>
-        <div class="metal silver">
-          <span class="label">Silver:</span>
-          <span class="price" id="silver-price">--</span>
-        </div>
-        <div class="metal platinum">
-          <span class="label">Platinum:</span>
-          <span class="price" id="platinum-price">--</span>
-        </div>
-      </div>
+<div class="bg-dark text-light py-2" style="margin-top: 56px;">
+  <div class="container d-flex justify-content-center gap-4 flex-wrap">
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-currency-bitcoin"></i>
+      <span>Gold Price: <span id="gold-price">--</span></span>
     </div>
-    
-
-<!-- HERO -->
-<section class="sg-hero">
-  <div class="container">
-    <div class="row align-items-center g-4">
-      <div class="col-lg-6">
-        <h1 class="display-5 fw-bold mb-3">Instant Gold Loans at Honest Rates</h1>
-        <p class="lead text-muted mb-4">Unlock funds against your gold with transparent pricing, secure vault storage, and same-day disbursal.</p>
-        <div class="d-flex gap-2">
-          <a class="btn btn-gold btn-lg" th:href="@{/admin/login}"><i class="bi bi-speedometer2 me-2"></i>Admin</a>
-          <a class="btn btn-outline-light btn-lg" th:href="@{/users/products}"><i class="bi bi-bag me-2"></i>Shop Jewellery</a>
-        </div>
-        <div class="d-flex align-items-center gap-3 mt-4 text-light small">
-          <span><i class="bi bi-shield-lock me-1"></i>Secure vaulting</span>
-          <span><i class="bi bi-lightning me-1"></i>Same-day approval</span>
-          <span><i class="bi bi-percent me-1"></i>Flexible tenure</span>
-        </div>
-      </div>
-      <div class="col-lg-6 text-center">
-        <img src="/images/gold_loan-removebg-preview.png" class="img-fluid sg-hero-img" alt="Gold Loan">
-      </div>
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-currency-bitcoin"></i>
+      <span>Silver Price: <span id="silver-price">--</span></span>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-currency-bitcoin"></i>
+      <span>Platinum Price: <span id="platinum-price">--</span></span>
     </div>
   </div>
-</section>
+</div>
+
+
+
+<!-- HERO -->
+<!-- HERO -->
+<div id="classicCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" style="margin: 20px;">
+  <div class="carousel-inner">
+
+    <div class="carousel-item active" >
+      <div class="carousel-content">
+        <img th:src="@{/images/silder5.jpg}" class="d-block side-img left" alt="Slide 1">
+        <img th:src="@{/images/silder1.jpg}" class="d-block center-img" alt="Slide 2">
+        <img th:src="@{/images/silder2.jpg}" class="d-block side-img right" alt="Slide 3">
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="carousel-content">
+        <img th:src="@{/images/silder1.jpg}" class="d-block side-img left" alt="Slide 2" height="600px">
+        <img th:src="@{/images/silder2.jpg}" class="d-block center-img" alt="Slide 3">
+        <img th:src="@{/images/silder3.jpg}" class="d-block side-img right" alt="Slide 4">
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="carousel-content" >
+        <img th:src="@{/images/silder2.jpg}" class="d-block side-img left" alt="Slide 2">
+        <img th:src="@{/images/silder3.jpg}" class="d-block center-img" alt="Slide 3">
+        <img th:src="@{/images/silder4.jpg}" class="d-block side-img right" alt="Slide 4">
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="carousel-content">
+        <img th:src="@{/images/silder3.jpg}" class="d-block side-img left" alt="Slide 2">
+        <img th:src="@{/images/silder4.jpg}" class="d-block center-img" alt="Slide 3">
+        <img th:src="@{/images/silder5.jpg}" class="d-block side-img right" alt="Slide 4">
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <div class="carousel-content">
+        <img th:src="@{/images/silder4.jpg}" class="d-block side-img left" alt="Slide 2">
+        <img th:src="@{/images/silder5.jpg}" class="d-block center-img" alt="Slide 3">
+        <img th:src="@{/images/silder1.jpg}" class="d-block side-img right" alt="Slide 4">
+      </div>
+    </div>
+
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#classicCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#classicCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
+
+
+  <div class="container" style="padding: 20px;">
+    <div class="row text-center">
+      <h2 class="display-6 fw-bold mb-4" style="color: rgb(48, 7, 8);padding: 20px; ">Premium Gold Collections<br>
+      <span class="text-muted fs-5">Explore our newly launched collection of exquisite jewellery</span></h2>
+      <div class="col">
+        <img src="/images/festive-edit-desktop.webp" alt="" height="800px" style="border-radius: 30px;">
+      </div>
+      <div class="col">
+        <div class="row" style="margin-bottom: 20px;">
+          <img src="/images/stunning-every-ear.webp" alt="" height="380px"style="border-radius: 30px;">
+        </div>
+        <div class="row">
+          <img src="/images/floral-bloom.webp" alt="" height="400px"style="border-radius: 30px;">
+        </div>
+        
+      </div>
+      
+    </div>
+  </div>
+
+
 
 <!-- FEATURES -->
 <section class="py-5 sg-dark-section">
@@ -112,52 +210,136 @@
   </div>
 </section>
 
-<!-- PRODUCT TEASER -->
-<section class="py-5 bg-light">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3 class="mb-0">Popular Jewellery</h3>
-      <a class="btn btn-link" th:href="@{/users/products}">View all <i class="bi bi-arrow-right"></i></a>
+<!-- FEATURES -->
+  <section class="py-5 sg-dark-section">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="sg-feature-card">
+            <div class="sg-feature-icon"><i class="bi bi-shield-check"></i></div>
+            <h5>Transparent Rates</h5>
+            <p>Clear interest, no hidden charges, full disclosure before disbursal.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="sg-feature-card">
+            <div class="sg-feature-icon"><i class="bi bi-safe2"></i></div>
+            <h5>Bank-Grade Security</h5>
+            <p>Your gold is stored in insured, high-security vaults with 24/7 monitoring.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="sg-feature-card">
+            <div class="sg-feature-icon"><i class="bi bi-clock-history"></i></div>
+            <h5>Fast Processing</h5>
+            <p>Minimal paperwork and same-day approvals to meet urgent needs.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="row g-3">
-      <div class="col-6 col-md-3">
-        <div class="sg-product-card">
-          <img src="/images/bra1.avif" alt="Ring">
-          <div class="p-2">
-            <div class="fw-semibold">Gold Ring</div>
-            <div class="text small">22K • 7g</div>
+  </section>
+
+  <!-- PRODUCT TEASER -->
+  <section class="py-5 ">
+    <div class="container">
+      <div class="d-flex justify-content align-items-center text-center mb-3 row">
+        <h3 class="mb-0">Popular Jewellery</h3>
+        
+      </div>
+      <div class="row g-3">
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/earrings-cat.webp" alt="Ring">
+            <div class="p-2">
+              <div class="fw-semibold">Earrings</div>
+              <div class="text small">22K • 7g</div>
+            </div>
           </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/rings-cat.jpg" alt="Necklace">
+            <div class="p-2">
+              <div class="fw-semibold">Rings</div>
+              <div class="text small">22K • 30g</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/earrings-cat.webp" alt="Necklace">
+            <div class="p-2">
+              <div class="fw-semibold">Earrings</div>
+              <div class="text small">22K • 30g</div>
+            </div>
+          </div>
+        </div>  
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/mangalsutra-cat.jpg" alt="Necklace">
+            <div class="p-2">
+              <div class="fw-semibold">MANGALSUTRA</div>
+              <div class="text small">22K • 30g</div>
+            </div>
+          </div>
+        </div> 
+
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/bracelets-cat.webp" alt="Necklace">
+            <div class="p-2">
+              <div class="fw-semibold">Bracelets</div>
+              <div class="text small">22K • 30g</div>
+            </div>
+          </div>
+        </div> 
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/bangles-cat.jpg" alt="Necklace">
+            <div class="p-2">
+              <div class="fw-semibold">Bangles</div>
+              <div class="text small">22K • 30g</div>
+            </div>
+          </div>
+        </div> 
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <img src="/images/chn.webp" alt="Necklace">
+            <div class="p-2">
+              <div class="fw-semibold">Chains</div>
+              <div class="text small">22K • 30g</div>
+            </div>
+          </div>
+        </div> 
+        <div class="col-6 col-md-3">
+          <div class="sg-product-card">
+            <a class="btn btn-link" th:href="@{/users/products}">View all <i class="bi bi-arrow-right"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+<section class="sg-hero">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold mb-3">Instant Gold Loans at Honest Rates</h1>
+        <p class="lead text-muted mb-4">Unlock funds against your gold with transparent pricing, secure vault storage, and same-day disbursal.</p>
+        <div class="d-flex gap-2">
+          <a class="btn btn-gold btn-lg" th:href="@{/admin/login}"><i class="bi bi-speedometer2 me-2"></i>Admin</a>
+          <a class="btn btn-outline-light btn-lg" th:href="@{/users/products}"><i class="bi bi-bag me-2"></i>Shop Jewellery</a>
+        </div>
+        <div class="d-flex align-items-center gap-3 mt-4 text-light small">
+          <span><i class="bi bi-shield-lock me-1"></i>Secure vaulting</span>
+          <span><i class="bi bi-lightning me-1"></i>Same-day approval</span>
+          <span><i class="bi bi-percent me-1"></i>Flexible tenure</span>
         </div>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="sg-product-card">
-          <img src="/images/cain1.jpg" alt="Necklace">
-          <div class="p-2">
-            <div class="fw-semibold">Necklace</div>
-            <div class="text small">22K • 30g</div>
-          </div>
-        </div>
+      <div class="col-lg-6 text-center">
+        <img src="/images/gold_loan-removebg-preview.png" class="img-fluid sg-hero-img" alt="Gold Loan">
       </div>
-      <div class="col-6 col-md-3">
-        <div class="sg-product-card">
-          <img src="/images/ear1.jpg" alt="Necklace">
-          <div class="p-2">
-            <div class="fw-semibold">earings</div>
-            <div class="text small">22K • 30g</div>
-          </div>
-        </div>
-      </div>  
-
-      <div class="col-6 col-md-3">
-        <div class="sg-product-card">
-          <img src="/images/bra8.jpg" alt="Necklace">
-          <div class="p-2">
-            <div class="fw-semibold">earings</div>
-            <div class="text small">22K • 30g</div>
-          </div>
-        </div>
-      </div> 
-
     </div>
   </div>
 </section>
@@ -210,6 +392,8 @@
       <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
     </div>
   </div>
-</footer><script th:src="@{/rates.js}"></script>
+</footer>
+<script th:src="@{/rates.js}"></script>
+
 </body>
 </html>

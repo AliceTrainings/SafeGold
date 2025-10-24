@@ -16,28 +16,73 @@
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg sg-navbar">
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar navbar-expand-lg shadow-sm fixed-top "style="background-color: #ffffff;">
   <div class="container">
-    <a class="navbar-brand fw-bold" th:href="@{/users/}"><span class="text-gradient">D.S.R</span> Gold Loan</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold fs-4" th:href="@{/users/}">
+      <span class="text-warning">D.S.R</span> Gold Loans
+    </a>
+
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+      aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navContent">
-      <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
+
+    <!-- Search bar -->
+      <form class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
+        <input class="form-control form-control-sm rounded-pill" type="search"
+          placeholder="Search for jewellery..." aria-label="Search">
+      </form>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/users/}">
+            <i class="bi bi-house-door me-1"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/users/products}">
+            <i class="bi bi-gem me-1"></i> Jewellery
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/dashboard}">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </li>
+
+        <!-- Optional dropdown for user -->
+        <li class="nav-item dropdown" th:if="${user != null}">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+            <span th:text="${user.name}">User</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" th:href="@{/dashboard}">My Dashboard</a></li>
+            <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" th:href="@{/users/logout}">Logout</a></li>
+          </ul>
+        </li>
+
+        <!-- Login button if no user -->
+        <li class="nav-item" th:if="${user == null}">
+          <a class="btn btn-outline-warning btn-sm ms-lg-3" th:href="@{/users/phone}">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </a>
+        </li>
       </ul>
 
-      <div th:if="${user != null}" class="d-flex align-items-center gap-3">
-        <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
-        <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
-      </div>
+      
     </div>
   </div>
 </nav>
+
 <body class="bg-light">
 <div class="container vh-100 d-flex justify-content-center align-items-center">
     <div class="card shadow p-4" style="max-width: 400px; width: 100%;">

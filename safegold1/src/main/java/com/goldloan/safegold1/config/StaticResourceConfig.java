@@ -24,3 +24,6 @@ public class StaticResourceConfig implements WebMvcConfigurer {
                 .setCachePeriod(3600);
     }
 }
+
+
+

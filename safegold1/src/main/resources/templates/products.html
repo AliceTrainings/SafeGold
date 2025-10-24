@@ -65,78 +65,222 @@
         .watchlist-heart-btn:hover i {
             transform: scale(1.2);
         }
+        .card {
+  background: #ffffff;
+}
+
+input.form-control:focus {
+  border-color: #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.btn-primary {
+  background-color: #d4af37;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #b89627;
+}
+
     </style>
     <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
 </head>
 <body>
-
-<!-- NAVBAR -->
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg sg-navbar">
+<!-- ==================== NAVBAR ==================== -->
+<nav class="navbar navbar-expand-lg shadow-sm fixed-top "style="background-color: #ffffff;">
   <div class="container">
-    <a class="navbar-brand fw-bold" th:href="@{/users/}"><span class="text-gradient">D.S.R</span> Gold Loan</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold fs-4" th:href="@{/users/}">
+      <span class="text-warning">D.S.R</span> Gold Loans
+    </a>
+
+    <!-- Toggler for mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+      aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navContent">
-      <ul class="navbar-nav me-auto ms-lg-4 gap-lg-3">
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/products}">Jewellery</a></li>
-        <li class="nav-item"><a class="nav-link active" th:href="@{/dashboard}">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" th:href="@{/users/watchlist}">My Watchlist</a></li>
-      </ul>
 
-      <div th:if="${user != null}" class="d-flex align-items-center gap-3">
-        <span class="text-muted small">Hi, <span th:text="${user.name}">User</span></span>
-        <a class="btn btn-outline-dark btn-sm" th:href="@{/users/logout}">Logout</a>
-      </div>
+    <!-- Search bar -->
+      <form class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
+        <input class="form-control form-control-sm rounded-pill" type="search"
+          placeholder="Search for jewellery..." aria-label="Search">
+      </form>
+
+    <!-- Navbar links -->
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/users/}">
+            <i class="bi bi-house-door me-1"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/users/products}">
+            <i class="bi bi-gem me-1"></i> Jewellery
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/dashboard}">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </li>
+
+        <!-- Optional dropdown for user -->
+        <li class="nav-item dropdown" th:if="${user != null}">
+          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i>
+            <span th:text="${user.name}">User</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" th:href="@{/dashboard}">My Dashboard</a></li>
+            <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" th:href="@{/users/logout}">Logout</a></li>
+          </ul>
+        </li>
+
+        <!-- Login button if no user -->
+        <li class="nav-item" th:if="${user == null}">
+          <a class="btn btn-outline-warning btn-sm ms-lg-3" th:href="@{/users/phone}">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>
+<div class="container" style="padding: 50px;">
+  
 <div class="container py-4">
-  <h3 class="mb-3">Browse Products</h3>
-  <form class="row g-2 mb-3" method="get">
-    <div class="col-md-4">
-      <input class="form-control" type="text" name="q" th:value="${q}" placeholder="Search by item name (e.g., ring)">
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-semibold mb-0 text-primary">
+          <i class="bi bi-search me-2"></i>Browse Products
+        </h3>
+        <a href="#" class="btn btn-outline-secondary btn-sm rounded-pill">
+          <i class="bi bi-arrow-clockwise"></i> Reset
+        </a>
+      </div>
+
+      <form class="row gy-3 gx-3" method="get">
+        <!-- Search by name -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold text-muted">Item Name</label>
+          <input 
+            type="text" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="q" 
+            th:value="${q}" 
+            placeholder="e.g., Ring, Necklace"
+          >
+        </div>
+
+        <!-- Category -->
+        <div class="col-md-4">
+          <label class="form-label fw-semibold text-muted">Category</label>
+          <input 
+            type="text" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="category" 
+            th:value="${category}" 
+            placeholder="Ring, Necklace, Bracelet"
+          >
+        </div>
+
+        <!-- Min/Max Price -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-muted">Min Price (₹)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="minPrice" 
+            th:value="${minPrice}" 
+            placeholder="1000"
+          >
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-muted">Max Price (₹)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="maxPrice" 
+            th:value="${maxPrice}" 
+            placeholder="50000"
+          >
+        </div>
+
+        <!-- Min/Max Weight -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-muted">Min Weight (g)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="minGrams" 
+            th:value="${minGrams}" 
+            placeholder="1"
+          >
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-muted">Max Weight (g)</label>
+          <input 
+            type="number" 
+            step="0.01" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="maxGrams" 
+            th:value="${maxGrams}" 
+            placeholder="50"
+          >
+        </div>
+
+        <!-- Karat Range -->
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-muted">Min Karat</label>
+          <input 
+            type="number" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="minCarats" 
+            th:value="${minCarats}" 
+            placeholder="18"
+          >
+        </div>
+
+        <div class="col-md-2">
+          <label class="form-label fw-semibold text-muted">Max Karat</label>
+          <input 
+            type="number" 
+            class="form-control form-control-lg rounded-3 shadow-sm" 
+            name="maxCarats" 
+            th:value="${maxCarats}" 
+            placeholder="24"
+          >
+        </div>
+
+        <!-- Filter Button -->
+        <div class="col-md-2 d-flex align-items-end">
+          <button type="submit" class="btn btn-primary w-100 btn-lg rounded-3 shadow-sm">
+            <i class="bi bi-funnel-fill me-1"></i> Filter
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="col-md-3">
-      <input class="form-control" type="text" name="category" th:value="${category}" placeholder="Category (Ring, Necklace)">
-    </div>
-    <div class="w-100"></div>
-    <div class="col-md-3">
-      <input class="form-control" type="number" step="0.01" name="minPrice" th:value="${minPrice}" placeholder="Min price">
-    </div>
-    <div class="col-md-3">
-      <input class="form-control" type="number" step="0.01" name="maxPrice" th:value="${maxPrice}" placeholder="Max price">
-    </div>
-    <div class="col-md-2">
-      <input class="form-control" type="number" step="0.01" name="minGrams" th:value="${minGrams}" placeholder="Min grams">
-    </div>
-    <div class="col-md-2">
-      <input class="form-control" type="number" step="0.01" name="maxGrams" th:value="${maxGrams}" placeholder="Max grams">
-    </div>
-    <div class="col-md-2">
-      <input class="form-control" type="number" name="minCarats" th:value="${minCarats}" placeholder="Min karat">
-    </div>
-    <div class="col-md-2">
-      <input class="form-control" type="number" name="maxCarats" th:value="${maxCarats}" placeholder="Max karat">
-    </div>
-    <div class="col-md-1">
-      <button class="btn btn-primary w-100" type="submit">Filter</button>
-    </div>
-  </form>
+  </div>
+</div>
+
 
   <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
     <div class="col" th:each="p : ${products}">
       <div class="card h-100 shadow-sm product-card">
         <div class="position-relative">
           <a th:href="@{'/users/products/' + ${p.id}}" class="d-block">
-            <img th:src="${p.imageUrl}" 
-                 th:onerror="this.src='/images/placeholder-product.svg'" 
-                 class="card-img-top" 
-                 style="height: 250px; object-fit: cover; cursor: pointer;" 
-                 alt="Product Image"
-                 onerror="this.src='/images/placeholder-product.svg'">
+            <img th:src="${p.imageUrl}" class="card-img-top" style="height: 250px; object-fit: cover; cursor: pointer;" alt="Product Image">
           </a>
           <div class="position-absolute top-0 end-0 p-2">
             <span class="badge bg-primary" th:text="${p.category}">Category</span>
@@ -227,5 +371,6 @@
     </div>
   </div>
 </footer>
+</div>
 </body>
 </html>
