@@ -1,152 +1,201 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D.S.R Gold Loan</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
-    <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D.S.R Gold Loan</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+    /* Navbar */
+    .navbar-brand span {
+      color: #FFC107; /* Gold color */
+    }
+    .navbar .nav-link {
+      color: #333;
+      font-weight: 500;
+    }
+    .navbar .nav-link:hover {
+      color: #FFC107;
+    }
+    /* Login Card */
+    .login-card {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .login-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
+    .login-card h2 {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #343a40;
+    }
+    .btn-login {
+      background-color: #FFC107;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-login:hover {
+      background-color: #e0a800;
+    }
+    /* Footer */
+    footer {
+      background-color: #343a40;
+      color: #adb5bd;
+      padding: 3rem 0 1rem;
+    }
+    footer a {
+      color: #adb5bd;
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: #FFC107;
+    }
+    .sg-social i {
+      color: #adb5bd;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    .sg-social i:hover {
+      color: #FFC107;
+    }
+    @media (max-width: 575px) {
+      .login-card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
 </head>
-<body><!-- ==================== NAVBAR ==================== -->
-<nav class="navbar navbar-expand-lg shadow-sm fixed-top "style="background-color: #ffffff;">
-  <div class="container">
-    <!-- Brand -->
-    <a class="navbar-brand fw-bold fs-4" th:href="@{/users/}">
-      <span class="text-warning">D.S.R</span> Gold Loans
-    </a>
 
-    <!-- Toggler for mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
-      aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+<body>
+  <!-- ==================== NAVBAR ==================== -->
+  <nav class="navbar navbar-expand-lg shadow-sm fixed-top bg-white">
+    <div class="container">
+      <a class="navbar-brand fw-bold fs-4" th:href="@{/users/}">
+        <span>D.S.R</span> Gold Loans
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
+        aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <!-- Search bar -->
       <form class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
         <input class="form-control form-control-sm rounded-pill" type="search"
-          placeholder="Search for jewellery..." aria-label="Search">
+               placeholder="Search for jewellery..." aria-label="Search">
       </form>
 
-    <!-- Navbar links -->
-    <div class="collapse navbar-collapse" id="navMenu">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-        <li class="nav-item">
-          <a class="nav-link active" th:href="@{/users/}">
-            <i class="bi bi-house-door me-1"></i> Home
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/users/products}">
-            <i class="bi bi-gem me-1"></i> Jewellery
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/dashboard}">
-            <i class="bi bi-speedometer2 me-1"></i> Dashboard
-          </a>
-        </li>
+      <div class="collapse navbar-collapse" id="navMenu">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/users/}"><i class="bi bi-house-door me-1"></i> Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/users/products}"><i class="bi bi-gem me-1"></i> Jewellery</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/dashboard}"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+          </li>
 
-        <!-- Optional dropdown for user -->
-        <li class="nav-item dropdown" th:if="${user != null}">
-          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-person-circle me-1"></i>
-            <span th:text="${user.name}">User</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" th:href="@{/dashboard}">My Dashboard</a></li>
-            <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" th:href="@{/users/logout}">Logout</a></li>
-          </ul>
-        </li>
+          <li class="nav-item dropdown" th:if="${user != null}">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+               aria-expanded="false"><i class="bi bi-person-circle me-1"></i> <span th:text="${user.name}">User</span></a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+              <li><a class="dropdown-item" th:href="@{/dashboard}">My Dashboard</a></li>
+              <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" th:href="@{/users/logout}">Logout</a></li>
+            </ul>
+          </li>
 
-        <!-- Login button if no user -->
-        <li class="nav-item" th:if="${user == null}">
-          <a class="btn btn-outline-warning btn-sm ms-lg-3" th:href="@{/users/phone}">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Login
-          </a>
-        </li>
-      </ul>
+          <li class="nav-item" th:if="${user == null}">
+            <a class="btn btn-outline-warning btn-sm ms-lg-3" th:href="@{/users/phone}"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-      
+  <!-- ==================== LOGIN ==================== -->
+  <div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="login-card text-center">
+      <h2>Login</h2>
+
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+      <form th:action="@{/users/login}" method="post">
+        <div class="mb-3">
+          <input type="text" name="mobileNumber" class="form-control form-control-lg rounded-pill" th:value="${mobileNumber}" placeholder="Phone" required/>
+        </div>
+        <div class="mb-3">
+          <input type="password" name="password" class="form-control form-control-lg rounded-pill" placeholder="Password" required/>
+        </div>
+        <button type="submit" class="btn btn-login w-100 btn-lg">Login</button>
+      </form>
+
+      <p class="mt-3">New user? <a th:href="@{/users/phone}">Register</a></p>
+      <p><a th:href="@{/admin/login}">Admin login</a></p>
     </div>
   </div>
-</nav>
 
-<body class="bg-light">
-<div class="container vh-100 d-flex justify-content-center align-items-center">
-    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
-        <h2 class="text-center mb-4">Login</h2>
-
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-        <form th:action="@{/users/login}" method="post">
-            <div class="mb-3">
-                <input type="text" name="mobileNumber" class="form-control" th:value="${mobileNumber}" placeholder="Phone" required/>
-            </div>
-            <div class="mb-3">
-                <input type="password" name="password" class="form-control" placeholder="Password" required/>
-            </div>
-            <button type="submit" class="btn btn-success w-100">Login</button>
-        </form>
-
-        <p class="text-center mt-3">
-            New user? 
-            <a th:href="@{/users/phone}">Register</a>
-        </p>
-        <p class="text-center mt-2">
-            <a th:href="@{/admin/login}">Admin login</a>
-        </p>
-    </div>
-</div>
-<!-- FOOTER -->
-<footer class="sg-footer">
-  <div class="container py-5">
-    <div class="row g-4">
-      <div class="col-md-4">
-        <h5>About D.S.R</h5>
-        <p class="text">We provide transparent gold loans with secure storage and a curated jewellery collection. Trusted by thousands of families.</p>
-      </div>
-      <div class="col-md-4">
-        <h5>Quick Links</h5>
-        <ul class="list-unstyled text-muted">
-          <li><a th:href="@{/users/products}">Shop Jewellery</a></li>
-          <li><a th:href="@{/dashboard}">User Dashboard</a></li>
-          <li><a th:href="@{/admin/login}">Admin Login</a></li>
-          <li><a th:href="@{/users/phone}">Login / Register</a></li>
-        </ul>
-      </div>
-      <div class="col-md-4">
-        <h5>Contact</h5>
-        <ul class="list-unstyled text-muted">
-          <li><i class="bi bi-geo-alt me-2"></i>Hyderabad, Telangana, India</li>
-          <li><i class="bi bi-envelope me-2"></i>support@dsr-gold.local</li>
-          <li><i class="bi bi-telephone me-2"></i>+91 90000 00000</li>
-        </ul>
-        <div class="d-flex gap-2 mt-2">
-          <a href="#" class="sg-social"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="sg-social"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="sg-social"><i class="fab fa-x-twitter"></i></a>
+  <!-- ==================== FOOTER ==================== -->
+  <footer>
+    <div class="container py-5">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <h5 class="text-white">About D.S.R</h5>
+          <p>Transparent gold loans, secure storage, and curated jewellery. Trusted by thousands of families.</p>
+        </div>
+        <div class="col-md-4">
+          <h5 class="text-white">Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a th:href="@{/users/products}">Shop Jewellery</a></li>
+            <li><a th:href="@{/dashboard}">User Dashboard</a></li>
+            <li><a th:href="@{/admin/login}">Admin Login</a></li>
+            <li><a th:href="@{/users/phone}">Login / Register</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5 class="text-white">Contact</h5>
+          <ul class="list-unstyled">
+            <li><i class="bi bi-geo-alt me-2"></i>Hyderabad, Telangana, India</li>
+            <li><i class="bi bi-envelope me-2"></i>support@dsr-gold.local</li>
+            <li><i class="bi bi-telephone me-2"></i>+91 90000 00000</li>
+          </ul>
+          <div class="d-flex gap-2 mt-2">
+            <a href="#" class="sg-social"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="sg-social"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="sg-social"><i class="fab fa-x-twitter"></i></a>
+          </div>
         </div>
       </div>
+      <hr class="my-4"/>
+      <div class="d-flex justify-content-between flex-column flex-md-row text-muted small">
+        <span>© 2025 D.S.R Finance Limited. All rights reserved.</span>
+        <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
+      </div>
     </div>
-    <hr class="my-4"/>
-    <div class="d-flex justify-content-between flex-column flex-md-row text-muted small">
-      <span>© 2025 D.S.R Finance Limited. All rights reserved.</span>
-      <span><a href="#">Privacy</a> · <a href="#">Terms</a></span>
-    </div>
-  </div>
-</footer>
- <script src="/rates.js"></script>
-</body>
+  </footer>
 
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/rates.js"></script>
+</body>
 </html>

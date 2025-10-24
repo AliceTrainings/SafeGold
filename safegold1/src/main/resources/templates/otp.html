@@ -1,171 +1,218 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D.S.R Gold Loan</title>
-    <link rel="stylesheet" href="/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body{font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';}</style>
-    <meta name="description" content="Transparent gold loans, fast processing, secure storage. Shop jewellery and manage loans easily.">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D.S.R Gold Loan - OTP Verification</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8f9fa;
+    }
+
+    /* Navbar styling */
+    .navbar-brand span {
+      color: #FFC107; /* Gold accent */
+    }
+    .navbar .nav-link {
+      color: #333;
+      font-weight: 500;
+    }
+    .navbar .nav-link:hover {
+      color: #FFC107;
+    }
+
+    /* OTP Card */
+    .otp-card {
+      max-width: 400px;
+      width: 100%;
+      margin: auto;
+      padding: 2rem;
+      margin-top: 120px;
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .otp-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+    .otp-card h2 {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #343a40;
+    }
+    .form-control {
+      border-radius: 50px;
+      padding: 0.75rem 1rem;
+    }
+    .btn-verify {
+      border-radius: 50px;
+      padding: 0.75rem;
+      background-color: #FFC107;
+      border: none;
+      font-weight: 600;
+    }
+    .btn-verify:hover {
+      background-color: #e0a800;
+    }
+
+    /* Countdown timer */
+    .countdown {
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+    #resendBtn {
+      text-decoration: underline;
+      color: #FFC107;
+      cursor: pointer;
+    }
+    #resendBtn:disabled {
+      color: #ccc;
+      cursor: not-allowed;
+      text-decoration: none;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #343a40;
+      color: #adb5bd;
+      padding: 3rem 0 1rem;
+    }
+    footer a {
+      color: #adb5bd;
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: #FFC107;
+    }
+    .sg-social i {
+      color: #adb5bd;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    .sg-social i:hover {
+      color: #FFC107;
+    }
+  </style>
 </head>
+
 <body>
 <!-- ==================== NAVBAR ==================== -->
-<nav class="navbar navbar-expand-lg shadow-sm fixed-top "style="background-color: #ffffff;">
+<nav class="navbar navbar-expand-lg shadow-sm fixed-top bg-white">
   <div class="container">
-    <!-- Brand -->
     <a class="navbar-brand fw-bold fs-4" th:href="@{/users/}">
-      <span class="text-warning">D.S.R</span> Gold Loans
+      <span>D.S.R</span> Gold Loans
     </a>
-
-    <!-- Toggler for mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu"
       aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Search bar -->
-      <form class="d-flex ms-lg-3 mt-3 mt-lg-0" role="search">
-        <input class="form-control form-control-sm rounded-pill" type="search"
-          placeholder="Search for jewellery..." aria-label="Search">
-      </form>
-
-    <!-- Navbar links -->
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
         <li class="nav-item">
-          <a class="nav-link active" th:href="@{/users/}">
-            <i class="bi bi-house-door me-1"></i> Home
-          </a>
+          <a class="nav-link active" th:href="@{/users/}"><i class="bi bi-house-door me-1"></i> Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/users/products}">
-            <i class="bi bi-gem me-1"></i> Jewellery
-          </a>
+          <a class="nav-link" th:href="@{/users/products}"><i class="bi bi-gem me-1"></i> Jewellery</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" th:href="@{/dashboard}">
-            <i class="bi bi-speedometer2 me-1"></i> Dashboard
-          </a>
-        </li>
-
-        <!-- Optional dropdown for user -->
-        <li class="nav-item dropdown" th:if="${user != null}">
-          <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-person-circle me-1"></i>
-            <span th:text="${user.name}">User</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" th:href="@{/dashboard}">My Dashboard</a></li>
-            <li><a class="dropdown-item" th:href="@{/users/profile}">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" th:href="@{/users/logout}">Logout</a></li>
-          </ul>
-        </li>
-
-        <!-- Login button if no user -->
-        <li class="nav-item" th:if="${user == null}">
-          <a class="btn btn-outline-warning btn-sm ms-lg-3" th:href="@{/users/phone}">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Login
-          </a>
+          <a class="nav-link" th:href="@{/dashboard}"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
         </li>
       </ul>
-
-      
     </div>
   </div>
 </nav>
 
-<body class="container mt-5">
-    <h2>Enter OTP</h2>
+<!-- ==================== OTP FORM ==================== -->
+<div class="otp-card">
+  <h2>OTP Verification</h2>
 
-    <!-- Error Message -->
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <!-- Error Message -->
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <!-- Debug OTP (remove in production) -->
-    <div th:if="${otp}" class="alert alert-warning">
-        OTP (for testing): <span th:text="${otp}"></span>
+  <!-- Debug OTP (remove in production) -->
+  <div th:if="${otp}" class="alert alert-warning">
+    OTP (for testing): <span th:text="${otp}"></span>
+  </div>
+
+  <form th:action="@{/users/otp}" method="post" id="otpForm">
+    <input type="hidden" name="phone" th:value="${phone}" />
+    <div class="mb-3">
+      <input type="text" class="form-control" name="otp" placeholder="Enter 6-digit OTP" required/>
     </div>
+    <button type="submit" class="btn btn-verify w-100">Verify OTP</button>
+  </form>
 
-    <!-- OTP Form -->
-    <form th:action="@{/users/otp}" method="post" id="otpForm">
-        <input type="hidden" name="phone" th:value="${phone}" />
-        <div class="mb-3">
-            <input type="text" class="form-control" name="otp" placeholder="6-digit OTP" required/>
-        </div>
-        <button type="submit" class="btn btn-success">Verify OTP</button>
-    </form>
+  <div class="countdown">
+    Expires in <span id="timer">60</span> seconds
+  </div>
+  <button class="btn btn-link p-0 mt-2" id="resendBtn" disabled>Resend OTP</button>
+</div>
 
-    <!-- Countdown & Resend -->
-    <div class="mt-3">
-        <span>Expires in <span id="timer">60</span> seconds</span><br/>
-        <button class="btn btn-link p-0 mt-2" id="resendBtn" disabled>Resend OTP</button>
-    </div>
+<script>
+  let countdown = 60;
+  const timerEl = document.getElementById("timer");
+  const resendBtn = document.getElementById("resendBtn");
 
-    <script>
-        let countdown = 60;
-        const timerEl = document.getElementById("timer");
-        const resendBtn = document.getElementById("resendBtn");
+  function startTimer() {
+    countdown = 60;
+    resendBtn.disabled = true;
+    const interval = setInterval(() => {
+      countdown--;
+      timerEl.innerText = countdown;
+      if (countdown <= 0) {
+        clearInterval(interval);
+        resendBtn.disabled = false;
+        timerEl.innerText = "0";
+      }
+    }, 1000);
+  }
 
-        // Start countdown
-        function startTimer() {
-            countdown = 60;
-            resendBtn.disabled = true;
-            const interval = setInterval(() => {
-                countdown--;
-                timerEl.innerText = countdown;
-                if (countdown <= 0) {
-                    clearInterval(interval);
-                    resendBtn.disabled = false;
-                    timerEl.innerText = "0";
-                }
-            }, 1000);
-        }
+  resendBtn.addEventListener("click", function () {
+    const phone = document.querySelector('input[name="phone"]').value;
+    fetch("/users/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "phone=" + encodeURIComponent(phone)
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.body.innerHTML = html;
+      startTimer();
+    })
+    .catch(err => {
+      alert("Failed to resend OTP. Try again.");
+      console.error(err);
+    });
+  });
 
-        // Handle Resend OTP
-        resendBtn.addEventListener("click", function () {
-            const phone = document.querySelector('input[name="phone"]').value;
+  window.onload = startTimer;
+</script>
 
-            // Send POST to /users/send-otp via fetch
-            fetch("/users/send-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: "phone=" + encodeURIComponent(phone)
-            })
-            .then(response => response.text())
-            .then(html => {
-                // Replace current page with new HTML containing updated OTP
-                document.body.innerHTML = html;
-                // Restart countdown
-                startTimer();
-            })
-            .catch(err => {
-                alert("Failed to resend OTP. Try again.");
-                console.error(err);
-            });
-        });
-
-        window.onload = startTimer;
-    </script>
-</body>
-<!-- FOOTER -->
-<footer class="sg-footer">
+<!-- ==================== FOOTER ==================== -->
+<footer>
   <div class="container py-5">
     <div class="row g-4">
       <div class="col-md-4">
-        <h5>About D.S.R</h5>
-        <p class="text">We provide transparent gold loans with secure storage and a curated jewellery collection. Trusted by thousands of families.</p>
+        <h5 class="text-white">About D.S.R</h5>
+        <p>Transparent gold loans, secure storage, and curated jewellery. Trusted by thousands of families.</p>
       </div>
       <div class="col-md-4">
-        <h5>Quick Links</h5>
-        <ul class="list-unstyled text-muted">
+        <h5 class="text-white">Quick Links</h5>
+        <ul class="list-unstyled">
           <li><a th:href="@{/users/products}">Shop Jewellery</a></li>
           <li><a th:href="@{/dashboard}">User Dashboard</a></li>
           <li><a th:href="@{/admin/login}">Admin Login</a></li>
@@ -173,8 +220,8 @@
         </ul>
       </div>
       <div class="col-md-4">
-        <h5>Contact</h5>
-        <ul class="list-unstyled text-muted">
+        <h5 class="text-white">Contact</h5>
+        <ul class="list-unstyled">
           <li><i class="bi bi-geo-alt me-2"></i>Hyderabad, Telangana, India</li>
           <li><i class="bi bi-envelope me-2"></i>support@dsr-gold.local</li>
           <li><i class="bi bi-telephone me-2"></i>+91 90000 00000</li>
@@ -193,4 +240,8 @@
     </div>
   </div>
 </footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
